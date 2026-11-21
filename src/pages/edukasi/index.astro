@@ -1,0 +1,351 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleArt from "../../components/ArticleArt.astro";
+import CtaPanel from "../../components/CtaPanel.astro";
+import FaqList from "../../components/FaqList.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import {
+  articleIconByCategory,
+  articles,
+  learningPaths,
+} from "../../lib/content";
+
+const featuredArticle = articles.find((article) => article.featured) ?? articles[0];
+
+const pathIcons: Record<string, string> = {
+  dasar: "ph:book-open-text",
+  administrasi: "ph:clipboard-text",
+  hitung: "ph:calculator",
+  patuh: "ph:shield-check",
+};
+
+const eduFaqs = [
+  {
+    q: "Apakah materi bisa dibaca tanpa akun?",
+    a: "Bisa. Seluruh materi pada tahap konsep ini terbuka untuk dibaca. Akun baru diperlukan ketika fitur progres belajar, kuis, dan sertifikat dibuka.",
+  },
+  {
+    q: "Apakah materi ini menggantikan peraturan resmi?",
+    a: "Tidak. Materi bersifat edukasi umum. Ketentuan resmi mengikuti Perda, peraturan pelaksanaan, SPPT, kode billing, dan pengumuman dari kanal pemerintah daerah.",
+  },
+  {
+    q: "Apakah kuis dan sertifikat sudah bisa diikuti?",
+    a: "Belum. Kuis empat pertanyaan dan sertifikat Citta Vidya masih dirancang. Tombol masuk akan menampilkan pemberitahuan bahwa fitur masih dalam pengembangan.",
+  },
+  {
+    q: "Dari mana contoh perhitungan dalam materi berasal?",
+    a: "Contoh disusun untuk ilustrasi pembelajaran dengan angka yang disederhanakan. Tarif dan dasar perhitungan resmi dapat berbeda menurut ketentuan yang berlaku.",
+  },
+];
+
+const categories = Array.from(new Set(articles.map((article) => article.category)));
+const site = Astro.site ?? new URL("https://pesona.example");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Pusat Edukasi Pajak Daerah PESONA",
+  description:
+    "Materi singkat tentang pajak daerah, administrasi usaha, perhitungan, dan kepatuhan untuk warga serta pelaku usaha Klungkung.",
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: articles.map((article, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: article.title,
+      url: new URL(`/edukasi/${article.id}`, site).toString(),
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Pusat Edukasi Pajak Daerah"
+  description="Pelajari pajak daerah tanpa istilah rumit: PBJT, PBB-P2, BPHTB, reklame, dan air tanah, plus administrasi usaha dan contoh perhitungan."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Citta Vidya · Pusat edukasi"
+    title="Pajak tidak harus"
+    highlight="rumit."
+    description="Materi singkat, contoh nyata, dan latihan kecil agar pajak daerah bisa dipahami sebelum mengambil keputusan. Tanpa akun, tanpa istilah yang dibiarkan menggantung."
+    breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Edukasi" }]}
+    icon="ph:book-open-text"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="#materi" class="btn btn-primary">
+        Mulai membaca
+        <Icon name="ph:arrow-down" size={17} />
+      </a>
+      <a href="/kalkulator" class="btn btn-secondary">
+        Coba kalkulator
+        <Icon name="ph:calculator" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="border-b border-line bg-forest-50/70 px-5 py-4">
+        <div class="flex items-center justify-between gap-3">
+          <span class="badge badge-forest">Ruang belajar</span>
+          <Icon name="ph:graduation-cap" size={21} class="text-forest-700" />
+        </div>
+        <p class="mt-3 font-display text-xl font-semibold text-ink">10 materi, 4 jalur.</p>
+        <p class="mt-1 text-xs leading-6 text-muted">Mulai dari topik yang paling dekat dengan kebutuhan Anda.</p>
+      </div>
+      <div class="grid grid-cols-2 divide-x divide-line">
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{learningPaths.length}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">jalur belajar</p>
+        </div>
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{categories.length}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">kategori materi</p>
+        </div>
+      </div>
+      <div class="border-t border-line px-5 py-3.5">
+        <p class="flex items-center gap-1.5 text-[0.65rem] text-muted-soft">
+          <Icon name="ph:info" size={13} />
+          Materi edukasi umum, bukan ketetapan pajak.
+        </p>
+      </div>
+    </div>
+  </PageHero>
+
+  <!-- Jalur belajar -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Jalur belajar"
+        title="Pilih arah, lalu ikuti sesuai kecepatan."
+        description="Empat jalur disusun untuk kebutuhan yang berbeda. Anda tidak harus berurutan."
+      />
+      <div class="mt-10 grid gap-4 md:grid-cols-2">
+        {
+          learningPaths.map((path) => {
+            const pathArticles = articles.filter((article) => article.module === path.id);
+            return (
+              <article class="card flex h-full flex-col p-6 sm:p-7">
+                <div class="flex items-start justify-between gap-4">
+                  <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-forest-50 text-forest-800">
+                    <Icon name={pathIcons[path.id] ?? "ph:book-open-text"} size={23} />
+                  </span>
+                  <span class="badge bg-sand-100 text-honey-800">{pathArticles.length} materi</span>
+                </div>
+                <h3 class="mt-5 font-display text-[1.35rem] font-semibold text-ink">{path.title}</h3>
+                <p class="mt-2 text-sm leading-7 text-muted">{path.desc}</p>
+                <ul class="mt-5 flex-1 space-y-2.5 border-t border-line pt-4">
+                  {pathArticles.map((article) => (
+                    <li>
+                      <a
+                        href={`/edukasi/${article.id}`}
+                        class="group flex items-start justify-between gap-3 text-xs font-medium leading-6 text-muted transition hover:text-forest-800"
+                      >
+                        <span>{article.title}</span>
+                        <Icon
+                          name="ph:arrow-up-right"
+                          size={13}
+                          class="mt-1 shrink-0 text-muted-soft transition group-hover:text-forest-700"
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Pilihan -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Mulai dari sini"
+        title="Satu materi yang bisa mengubah cara Anda melihat pajak."
+        description="Pasang pajak di sekitar transaksi sehari-hari, lalu telusuri topik lain sesuai kebutuhan."
+      />
+      <a
+        href={`/edukasi/${featuredArticle.id}`}
+        class="group card card-hover mt-10 grid overflow-hidden lg:grid-cols-[0.8fr_1.2fr]"
+      >
+        <div class="p-2.5 pb-0 lg:pb-2.5 lg:pr-0">
+          <ArticleArt category={featuredArticle.category} large class="h-full min-h-[17rem]" />
+        </div>
+        <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="badge badge-forest">{featuredArticle.category}</span>
+            <span class="badge bg-white text-muted">{featuredArticle.level}</span>
+            <span class="text-[0.68rem] text-muted-soft">{featuredArticle.minutes} menit baca</span>
+          </div>
+          <h3 class="mt-5 font-display text-[1.6rem] font-semibold leading-tight text-ink transition group-hover:text-forest-800 sm:text-[2rem]">
+            {featuredArticle.title}
+          </h3>
+          <p class="mt-4 max-w-xl text-sm leading-7 text-muted">{featuredArticle.excerpt}</p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            {featuredArticle.takeaways.slice(0, 2).map((takeaway) => (
+              <span class="chip">
+                <Icon name="ph:check" size={13} class="text-forest-700" />
+                {takeaway}
+              </span>
+            ))}
+          </div>
+          <span class="link-arrow mt-7">
+            Baca materi lengkap
+            <Icon name="ph:arrow-right" size={15} />
+          </span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Semua materi -->
+  <section id="materi" class="section-pad scroll-mt-24">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Daftar materi"
+        title="Sepuluh topik, tanpa urutan yang memaksa."
+        description="Pilih yang paling relevan. Setiap materi dilengkapi ringkasan, istilah kunci, dan langkah praktis."
+      />
+      <div class="card mt-10 grid overflow-hidden md:grid-cols-2">
+        {
+          articles.map((article, index) => (
+            <a
+              href={`/edukasi/${article.id}`}
+              class:list={[
+                "group flex items-start gap-4 border-line p-5 transition hover:bg-forest-50/60 sm:p-6",
+                index % 2 === 0 ? "md:border-r" : "",
+                index < articles.length - (articles.length % 2 === 0 ? 2 : 1) ? "border-b" : "",
+                index === articles.length - 1 && articles.length % 2 !== 0 ? "md:border-r" : "",
+              ]}
+            >
+              <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
+                <Icon name={articleIconByCategory[article.category] ?? "ph:book-open-text"} size={18} />
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.62rem] font-medium text-muted-soft">
+                  <span class="font-semibold uppercase tracking-[0.08em] text-forest-700">{article.category}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{article.minutes} menit</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{article.level}</span>
+                </span>
+                <span class="mt-1.5 block text-sm font-semibold leading-6 text-ink transition group-hover:text-forest-800">
+                  {article.title}
+                </span>
+                <span class="mt-1 block line-clamp-1 text-xs leading-5 text-muted">{article.excerpt}</span>
+              </span>
+              <Icon
+                name="ph:arrow-up-right"
+                size={16}
+                class="mt-1 shrink-0 text-muted-soft transition group-hover:text-forest-700"
+              />
+            </a>
+          ))
+        }
+      </div>
+      <p class="fine-print mt-5">
+        Materi disusun sebagai edukasi umum. Angka dan contoh bukan ketetapan resmi. Selalu
+        cocokkan dengan peraturan dan kanal pemerintah daerah.
+      </p>
+    </div>
+  </section>
+
+  <!-- Kuis & sertifikat -->
+  <section class="section-pad-sm">
+    <div class="container-page">
+      <div class="surface-dark relative overflow-hidden rounded-[2rem] p-6 sm:p-10 lg:p-12">
+        <div class="pointer-events-none absolute inset-0 opacity-[0.12] dot-grid-light" aria-hidden="true"></div>
+        <div class="relative grid items-center gap-10 lg:grid-cols-[1fr_0.9fr]">
+          <div>
+            <p class="eyebrow-light">
+              <span class="h-px w-7 bg-honey-300" aria-hidden="true"></span>
+              Kuis &amp; sertifikat
+            </p>
+            <h2 class="display-md mt-4 text-white">Uji pemahaman dalam dua menit.</h2>
+            <p class="lead-light mt-4">
+              Empat pertanyaan tanpa nilai rapor. Skor 80% akan membuka sertifikat belajar Citta
+              Vidya saat akun sudah aktif.
+            </p>
+            <div class="mt-6 flex flex-wrap gap-2">
+              <span class="badge-dark">4 pertanyaan</span>
+              <span class="badge-dark">Skor 80%</span>
+              <span class="badge-dark">Sertifikat digital</span>
+            </div>
+            <a href="/tentang#pengembangan" data-login-open class="btn btn-accent mt-7">
+              Masuk untuk mengikuti kuis
+              <Icon name="ph:lock-key" size={16} />
+            </a>
+            <p class="mt-3 text-[0.68rem] text-forest-100/70">
+              Kuis dan sertifikat masih dalam pengembangan. Tampilan di samping adalah ilustrasi.
+            </p>
+          </div>
+
+          <div class="relative mx-auto w-full max-w-sm rotate-[1.5deg]">
+            <div class="rounded-[1.35rem] border border-white/20 bg-paper p-5 text-ink shadow-lift">
+              <div class="flex items-start justify-between gap-3 border-b border-line pb-4">
+                <div>
+                  <p class="text-[0.58rem] font-bold uppercase tracking-[0.16em] text-forest-700">Sertifikat belajar</p>
+                  <p class="mt-1 font-display text-lg font-semibold">Citta Vidya</p>
+                </div>
+                <span class="inline-flex size-10 items-center justify-center rounded-full border border-honey-300 bg-honey-100 text-honey-700">
+                  <Icon name="ph:seal-check" size={21} />
+                </span>
+              </div>
+              <p class="mt-4 text-[0.62rem] text-muted-soft">Diberikan kepada</p>
+              <p class="mt-1 font-display text-[1.35rem] font-semibold">Nama Peserta</p>
+              <div class="mt-4 h-px bg-line"></div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <div>
+                  <p class="text-[0.62rem] text-muted-soft">Skor kuis</p>
+                  <p class="font-display text-2xl font-semibold text-forest-800">80%</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[0.58rem] text-muted-soft">PESONA · Klungkung</p>
+                  <p class="mt-1 text-[0.58rem] font-semibold text-forest-700">Ilustrasi</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <div class="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+        <div>
+          <p class="eyebrow">
+            <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+            Pertanyaan edukasi
+          </p>
+          <h2 class="display-md mt-4">Sebelum mulai membaca.</h2>
+          <p class="mt-5 text-sm leading-7 text-muted">
+            Materi disusun untuk membantu pemahaman, bukan menggantikan konsultasi resmi.
+          </p>
+          <a href="/layanan/konsultasi" class="link-arrow mt-6">
+            Lihat alur konsultasi
+            <Icon name="ph:arrow-right" size={14} />
+          </a>
+        </div>
+        <FaqList items={eduFaqs} />
+      </div>
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Lanjutkan belajar"
+    title="Pahami pajaknya, lalu coba hitung sendiri."
+    description="Gunakan kalkulator simulasi untuk menerapkan materi pada angka Anda. Hasilnya bukan ketetapan resmi, tetapi cukup untuk mulai memahami."
+    primaryLabel="Buka kalkulator"
+    primaryHref="/kalkulator"
+    secondaryLabel="Lihat jenis pajak"
+    secondaryHref="/pajak"
+  />
+</BaseLayout>
+

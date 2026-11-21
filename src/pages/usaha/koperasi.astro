@@ -1,0 +1,274 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaPanel from "../../components/CtaPanel.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import { cooperative, formatRupiah } from "../../lib/content";
+
+const splitColors: Record<string, string> = {
+  forest: "bg-forest-600",
+  sand: "bg-honey-300",
+  peach: "bg-clay-200",
+};
+
+const governance = [
+  {
+    title: "Kepemilikan tetap di anggota",
+    text: "PESONA menyediakan kanal dan data. Keputusan usaha, harga, dan bagi hasil tetap milik koperasi.",
+    icon: "ph:users-three",
+  },
+  {
+    title: "Angka dapat diperiksa",
+    text: "Anggota dapat melihat listing, booking, dan dasar perhitungan bagi hasil bulanan.",
+    icon: "ph:receipt",
+  },
+  {
+    title: "Persentase disepakati",
+    text: "Skema 80/10/10 pada situs ini adalah ilustrasi. Persentase resmi harus disepakati anggota.",
+    icon: "ph:scales",
+  },
+  {
+    title: "Pendampingan bertahap",
+    text: "Operator koperasi mendapat panduan pencatatan, publikasi katalog, dan penanganan keluhan.",
+    icon: "ph:lifebuoy",
+  },
+];
+---
+
+<BaseLayout
+  title="Ruang Koperasi"
+  description="Ruang koperasi PESONA: anggota, listing, booking, laporan bulanan, dan simulasi bagi hasil 80/10/10. Seluruh angka adalah ilustrasi."
+>
+  <PageHero
+    eyebrow="Citta Karya · Koperasi"
+    title="Usaha warga,"
+    highlight="dikelola bersama."
+    description="Koperasi mendaftarkan anggota, mengelola katalog, dan menjalankan bagi hasil. PESONA menyediakan kanal, data, dan pasar tanpa mengambil alih kepemilikan usaha."
+    breadcrumbs={[
+      { label: "Beranda", href: "/" },
+      { label: "Usaha", href: "/usaha" },
+      { label: "Koperasi" },
+    ]}
+    icon="ph:users-three"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="#alur" class="btn btn-primary">
+        Pahami alurnya
+        <Icon name="ph:arrow-down" size={17} />
+      </a>
+      <a href="/usaha/registry" class="btn btn-secondary">
+        Lihat registry
+        <Icon name="ph:storefront" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-forest-50/70 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-700">Contoh koperasi</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">{cooperative.name}</p>
+        </div>
+        <span class="badge badge-forest">Operator warga</span>
+      </div>
+      <div class="grid grid-cols-2 divide-x divide-line">
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{cooperative.members}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">anggota contoh</p>
+        </div>
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{cooperative.listings}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">listing aktif</p>
+        </div>
+      </div>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Data ilustrasi, bukan laporan koperasi nyata.
+      </p>
+    </div>
+  </PageHero>
+
+  <!-- Penjelasan & laporan -->
+  <section class="section-pad">
+    <div class="container-page grid items-start gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Peran koperasi
+        </p>
+        <h2 class="display-md mt-4">Satu ruang untuk anggota, katalog, dan bagi hasil.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Koperasi sering menjadi simpul ekonomi warga. PESONA merancang ruang yang membantu
+          operator mencatat anggota, menampilkan layanan, dan membuka perhitungan bagi hasil.
+        </p>
+        <ul class="mt-6 space-y-3">
+          {[
+            "Anggota dan listing terhubung ke satu registry.",
+            "Booking tercatat dan bagi hasil dapat diperiksa.",
+            "Laporan bulanan tersedia untuk anggota dan pengawas.",
+          ].map((item) => (
+            <li class="flex gap-2.5 text-sm leading-7 text-muted">
+              <Icon name="ph:check-circle" size={17} class="mt-1 shrink-0 text-forest-600" />
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-7 rounded-2xl border border-[#D9E3F0] bg-[#F0F6FF] p-5">
+          <p class="flex items-start gap-2.5 text-xs leading-6 text-muted">
+            <Icon name="ph:info" size={16} class="mt-0.5 shrink-0 text-honey-700" />
+            Skema 80/10/10 pada halaman ini adalah ilustrasi prototipe. Persentase resmi harus
+            disepakati anggota dan dituangkan dalam aturan koperasi.
+          </p>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between gap-3 border-b border-line bg-white/70 px-5 py-4">
+          <div>
+            <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-soft">Contoh pembagian</p>
+            <p class="mt-1 font-display text-lg font-semibold text-ink">Nilai booking {formatRupiah(5000000)}</p>
+          </div>
+          <Icon name="ph:chart-pie-slice" size={24} class="text-forest-700" />
+        </div>
+        <div class="p-5">
+          <div class="flex h-4 overflow-hidden rounded-full bg-line" aria-hidden="true">
+            {cooperative.split.map((part) => (
+              <span class={splitColors[part.tone] ?? "bg-forest-600"} style={`width:${part.pct}%`}></span>
+            ))}
+          </div>
+          <div class="mt-5 space-y-3">
+            {cooperative.split.map((part) => (
+              <div class="flex items-center justify-between gap-3">
+                <span class="flex items-center gap-2 text-xs text-muted">
+                  <span class={`size-2.5 rounded-full ${splitColors[part.tone] ?? "bg-forest-600"}`}></span>
+                  {part.label}
+                </span>
+                <span class="text-xs font-semibold text-ink">{part.pct}% · {formatRupiah(5000000 * part.pct / 100)}</span>
+              </div>
+            ))}
+          </div>
+          <div class="mt-5 rounded-xl bg-forest-50 p-4">
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-xs text-muted">Total booking</span>
+              <span class="font-display text-lg font-semibold text-forest-900">{formatRupiah(5000000)}</span>
+            </div>
+            <p class="mt-1 text-[0.62rem] leading-5 text-muted-soft">Contoh angka, bukan transaksi nyata.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alur -->
+  <section id="alur" class="border-y border-line bg-white/50 section-pad scroll-mt-24">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Cara kerja"
+        title="Empat langkah mengelola ruang koperasi."
+        description="Alur ini masih dirancang. Belum ada anggota, listing, atau transaksi nyata yang dibuat di situs ini."
+      />
+      <div class="mt-10 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          { step: "01", title: "Daftarkan anggota", text: "Profil anggota, peran, dan unit usaha.", icon: "ph:user-plus" },
+          { step: "02", title: "Kelola listing", text: "Katalog layanan, tarif, dan ketersediaan.", icon: "ph:storefront" },
+          { step: "03", title: "Catat booking", text: "Transaksi, bukti, dan status layanan.", icon: "ph:calendar-check" },
+          { step: "04", title: "Bagi hasil & laporan", text: "Perhitungan, persetujuan, dan laporan bulanan.", icon: "ph:chart-pie-slice" },
+        ].map((item) => (
+          <div class="rounded-2xl border border-line bg-paper p-5">
+            <div class="flex items-center justify-between gap-3">
+              <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                <Icon name={item.icon} size={19} />
+              </span>
+              <span class="font-display text-xs font-semibold text-muted-soft">{item.step}</span>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-ink">{item.title}</h3>
+            <p class="mt-2 text-xs leading-6 text-muted">{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tata kelola -->
+  <section class="section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Tata kelola
+        </p>
+        <h2 class="display-md mt-4">Transparan, tetapi tetap milik warga.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          PESONA tidak mengambil alih kepemilikan atau keputusan usaha. Perannya adalah
+          menyediakan kanal, data, dan pendampingan yang bisa diperiksa bersama.
+        </p>
+        <div class="mt-6 flex items-center gap-2.5 rounded-xl border border-line bg-white/65 p-4 text-xs leading-6 text-muted">
+          <Icon name="ph:lock-key" size={16} class="shrink-0 text-forest-700" />
+          Ruang koperasi belum aktif pada tahap konsep.
+        </div>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        {governance.map((item) => (
+          <div class="rounded-2xl border border-line bg-white/65 p-5">
+            <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+              <Icon name={item.icon} size={19} />
+            </span>
+            <h3 class="mt-4 text-sm font-semibold text-ink">{item.title}</h3>
+            <p class="mt-2 text-xs leading-6 text-muted">{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Laporan -->
+  <section class="border-y border-line bg-sand-50/60 section-pad">
+    <div class="container-page grid items-start gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Laporan bulanan
+        </p>
+        <h2 class="display-md mt-4">Anggota bisa melihat angkanya.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Laporan sederhana membantu koperasi menjelaskan performa dan dasar bagi hasil tanpa
+          harus menyusun ulang dari awal.
+        </p>
+        <p class="fine-print mt-5">
+          Laporan pada halaman ini adalah contoh tampilan. Tidak ada anggota atau transaksi nyata.
+        </p>
+      </div>
+      <div class="overflow-hidden rounded-[1.5rem] border border-line bg-white/85 shadow-soft">
+        <div class="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
+          <div>
+            <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-soft">Laporan contoh</p>
+            <p class="mt-1 font-display text-lg font-semibold text-ink">Ringkasan bulan ini</p>
+          </div>
+          <span class="badge badge-sand">Ilustrasi</span>
+        </div>
+        <dl class="grid grid-cols-2 divide-x divide-y divide-line">
+          {cooperative.report.map((row) => (
+            <div class="p-5">
+              <dt class="text-[0.65rem] text-muted-soft">{row.label}</dt>
+              <dd class="mt-1.5 font-display text-xl font-semibold text-forest-800">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+          Nilai transaksi contoh: Rp18,25 juta. Bukan laporan resmi.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Ruang koperasi"
+    title="Mulai dari anggota, bukan dari aplikasi."
+    description="Kenali registry dan pelatihan yang dapat mendukung anggota koperasi. Ruang koperasi akan dibuka bertahap setelah tata kelola dan uji coba."
+    primaryLabel="Kembali ke Citta Karya"
+    primaryHref="/usaha"
+    secondaryLabel="Buka pelatihan"
+    secondaryHref="/usaha/pelatihan"
+    note="Seluruh angka dan skema bagi hasil adalah ilustrasi."
+  />
+</BaseLayout>

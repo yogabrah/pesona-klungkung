@@ -1,0 +1,260 @@
+---
+import { NAV, SITE } from "../data/site";
+import { SERVICES } from "../data/services";
+import Icon from "./Icon.astro";
+import Logo from "./Logo.astro";
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (match: string) =>
+  match === "/" ? path === "/" : path === match || path.startsWith(`${match}/`);
+---
+
+<div class="relative z-50 bg-forest-950 text-forest-100">
+  <div class="container-page flex min-h-9 items-center justify-between gap-4 py-2 text-[0.68rem] font-medium">
+    <p class="flex items-center gap-2 tracking-[0.02em]">
+      <span class="relative flex size-1.5">
+        <span class="absolute inline-flex size-full animate-ping rounded-full bg-honey-300 opacity-70"></span>
+        <span class="relative inline-flex size-1.5 rounded-full bg-honey-300"></span>
+      </span>
+      <span class="text-forest-100/90 sm:hidden">Konsep platform · Klungkung</span>
+      <span class="hidden text-forest-100/90 sm:inline">{SITE.conceptLabel} untuk Kabupaten Klungkung</span>
+    </p>
+    <div class="hidden items-center gap-5 sm:flex">
+      <span class="hidden items-center gap-1.5 text-forest-200/80 sm:flex">
+        <Icon name="ph:seal-check" size={14} />
+        TRI CITTA MAHOTTAMA
+      </span>
+      <span class="flex items-center gap-1.5 whitespace-nowrap text-forest-100/90">
+        <Icon name="ph:map-pin" size={14} />
+        Klungkung, Bali
+      </span>
+    </div>
+  </div>
+</div>
+
+<header id="site-header" class="sticky top-0 z-50 border-b border-line/70 bg-paper/88 backdrop-blur-xl">
+  <div class="container-page flex h-[4.7rem] items-center justify-between gap-6">
+    <a href="/" class="shrink-0" aria-label="PESONA Kabupaten Klungkung — kembali ke beranda">
+      <Logo />
+    </a>
+
+    <nav class="hidden items-center gap-0.5 lg:flex" aria-label="Navigasi utama">
+      {
+        NAV.map((item) => {
+          const active = isActive(item.match);
+          return (
+            <a
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              class:list={[
+                "relative rounded-full px-3.5 py-2 text-[0.82rem] font-semibold transition duration-300",
+                active
+                  ? "bg-forest-50 text-forest-900"
+                  : "text-muted hover:bg-forest-50/70 hover:text-forest-900",
+              ]}
+            >
+              {item.label}
+              {active && (
+                <span class="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-honey-400" aria-hidden="true" />
+              )}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <div class="flex items-center gap-2.5">
+      <a
+        href="/tentang#pengembangan"
+        data-login-open
+        class="btn btn-primary btn-sm inline-flex"
+      >
+        Masuk
+        <Icon name="ph:sign-in" size={16} class="hidden sm:block" />
+      </a>
+      <button
+        id="menu-open"
+        type="button"
+        class="inline-flex size-11 items-center justify-center rounded-full border border-forest-200 bg-white/70 text-forest-900 transition hover:bg-white lg:hidden"
+        aria-label="Buka menu navigasi"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Icon name="ph:list" size={22} />
+      </button>
+    </div>
+  </div>
+
+  <noscript>
+    <nav class="container-page flex flex-wrap gap-x-4 gap-y-2 border-t border-line py-3 text-xs font-semibold text-forest-800 lg:hidden" aria-label="Navigasi tanpa JavaScript">
+      {NAV.map((item) => <a href={item.href} class="hover:underline">{item.label}</a>)}
+      <a href="/tentang#pengembangan" class="text-honey-700 hover:underline">Masuk</a>
+    </nav>
+  </noscript>
+</header>
+
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-[80] lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu navigasi PESONA"
+  hidden
+>
+  <button
+    type="button"
+    class="absolute inset-0 h-full w-full bg-forest-950/55 backdrop-blur-[2px]"
+    data-menu-close
+    aria-label="Tutup menu"
+    tabindex="-1"
+  ></button>
+  <div
+    class="absolute inset-x-3 top-3 max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-[1.75rem] border border-line bg-paper p-5 shadow-lift animate-fade [animation-duration:0.35s] sm:left-auto sm:w-[26rem]"
+  >
+    <div class="flex items-center justify-between gap-4 border-b border-line pb-4">
+      <Logo />
+      <button
+        id="menu-close"
+        type="button"
+        class="inline-flex size-10 items-center justify-center rounded-full border border-forest-200 bg-white text-forest-900"
+        aria-label="Tutup menu"
+      >
+        <Icon name="ph:x" size={20} />
+      </button>
+    </div>
+
+    <nav class="mt-4 grid gap-1" aria-label="Navigasi seluler">
+      {
+        NAV.map((item) => {
+          const active = isActive(item.match);
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                "flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[0.95rem] font-semibold transition",
+                active ? "bg-forest-50 text-forest-900" : "text-muted hover:bg-forest-50/70 hover:text-forest-900",
+              ]}
+            >
+              {item.label}
+              <Icon name={active ? "ph:dot-outline" : "ph:caret-right"} size={16} />
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <div class="mt-4 border-t border-line pt-4">
+      <p class="px-1 text-[0.66rem] font-bold uppercase tracking-[0.16em] text-muted-soft">Layanan</p>
+      <div class="mt-2 grid gap-0.5">
+        {
+          SERVICES.map((service) => (
+            <a
+              href={`/layanan/${service.slug}`}
+              class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-muted hover:bg-forest-50 hover:text-forest-900"
+            >
+              <Icon name={service.icon} size={17} class="text-forest-700" />
+              {service.shortTitle}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-5 grid gap-2.5">
+      <a href="/tentang#pengembangan" data-login-open class="btn btn-primary w-full">
+        Masuk ke PESONA
+        <Icon name="ph:sign-in" size={17} />
+      </a>
+      <p class="text-center text-[0.68rem] leading-relaxed text-muted-soft">
+        Konsep platform · akun masih dalam pengembangan
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const menu = document.getElementById("mobile-menu");
+  const openButton = document.getElementById("menu-open");
+  const closeButton = document.getElementById("menu-close");
+  const header = document.getElementById("site-header");
+
+  let lastFocused: HTMLElement | null = null;
+
+  function openMenu() {
+    if (!menu || !openButton) return;
+    lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : openButton;
+    menu.hidden = false;
+    document.body.classList.add("no-scroll");
+    openButton.setAttribute("aria-expanded", "true");
+    menu.querySelector<HTMLElement>("a[href], button:not([tabindex='-1'])")?.focus();
+  }
+
+  function closeMenu(restoreFocus = true) {
+    if (!menu || !openButton) return;
+    menu.hidden = true;
+    document.body.classList.remove("no-scroll");
+    openButton.setAttribute("aria-expanded", "false");
+    if (restoreFocus) (lastFocused ?? openButton).focus();
+  }
+
+  openButton?.addEventListener("click", openMenu);
+  closeButton?.addEventListener("click", () => closeMenu());
+  menu?.querySelectorAll("[data-menu-close]").forEach((control) => {
+    control.addEventListener("click", () => closeMenu());
+  });
+
+  menu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => closeMenu(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!menu || menu.hidden) return;
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMenu();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+
+    const focusable = Array.from(
+      menu.querySelectorAll<HTMLElement>("a[href], button:not([disabled]):not([tabindex='-1'])"),
+    ).filter((element) => element.offsetParent !== null);
+
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 1024 && menu && !menu.hidden) closeMenu(false);
+  });
+
+  if (header) {
+    const updateHeader = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+  }
+</script>
+
+<style>
+  #site-header {
+    transition:
+      box-shadow 300ms var(--ease-soft),
+      background-color 300ms var(--ease-soft);
+  }
+
+  #site-header.is-scrolled {
+    box-shadow: 0 18px 40px -32px rgb(7 30 58 / 0.5);
+    background-color: rgb(248 250 253 / 0.96);
+  }
+</style>

@@ -1,0 +1,181 @@
+---
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import LoginDialog from "../components/LoginDialog.astro";
+import { SITE } from "../data/site";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  class?: string;
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = "/og-pesona.jpg",
+  type = "website",
+  noindex = false,
+  jsonLd,
+  class: className = "",
+} = Astro.props;
+
+const site = Astro.site ?? new URL("https://pesona.example");
+const pathname = Astro.url.pathname !== "/" ? Astro.url.pathname.replace(/\/+$/, "") : "/";
+const canonical = new URL(pathname, site).toString();
+const pageTitle =
+  title === SITE.name
+    ? `${SITE.name} — ${SITE.longName} Kabupaten Klungkung`
+    : title.includes(SITE.name)
+      ? title
+      : `${title} — ${SITE.name}`;
+const socialImage = new URL(image, site).toString();
+const logoUrl = new URL("/logo-klungkung.png", site).toString();
+
+const organizationId = `${site.origin}/#organization`;
+const websiteId = `${site.origin}/#website`;
+const webpageId = `${canonical}#webpage`;
+
+const baseGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: SITE.name,
+      alternateName: SITE.longName,
+      url: site.origin,
+      logo: logoUrl,
+      description: SITE.description,
+      email: SITE.email,
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Kabupaten Klungkung",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      url: site.origin,
+      name: SITE.name,
+      description: SITE.description,
+      inLanguage: "id-ID",
+      publisher: { "@id": organizationId },
+    },
+    {
+      "@type": "WebPage",
+      "@id": webpageId,
+      url: canonical,
+      name: pageTitle,
+      description,
+      isPartOf: { "@id": websiteId },
+      about: { "@id": organizationId },
+      inLanguage: "id-ID",
+    },
+  ],
+};
+
+const extraGraphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <script is:inline>document.documentElement.classList.add("js");</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex, nofollow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
+    />
+    <meta name="theme-color" content="#0B2C52" />
+    <meta name="author" content="PESONA — konsep platform Kabupaten Klungkung" />
+    <meta name="application-name" content="PESONA" />
+    <meta name="geo.region" content="ID-BA" />
+    <meta name="geo.placename" content="Klungkung" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={`${SITE.name} — ${SITE.longName}`} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.name} — ${SITE.longName}`} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(baseGraph)} />
+    {extraGraphs.map((graph) => <script type="application/ld+json" set:html={JSON.stringify(graph)} />)}
+
+    <slot name="head" />
+  </head>
+  <body class:list={["min-h-screen bg-paper", className]}>
+    <a class="skip-link" href="#main">Lewati ke konten utama</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <LoginDialog />
+
+    <script>
+      const revealElements = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+
+      if (!("IntersectionObserver" in window)) {
+        revealElements.forEach((element) => element.classList.add("is-visible"));
+      } else {
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+
+              const element = entry.target as HTMLElement;
+              const siblings = Array.from(element.parentElement?.children ?? []).filter(
+                (sibling): sibling is HTMLElement =>
+                  sibling instanceof HTMLElement && sibling.classList.contains("reveal"),
+              );
+              const index = siblings.indexOf(element);
+
+              element.style.setProperty("--reveal-delay", `${Math.min(index, 4) * 70}ms`);
+              element.classList.add("is-visible");
+              revealObserver.unobserve(element);
+            });
+          },
+          {
+            threshold: 0.08,
+            rootMargin: "0px 0px -6% 0px",
+          },
+        );
+
+        revealElements.forEach((element) => revealObserver.observe(element));
+      }
+    </script>
+  </body>
+</html>

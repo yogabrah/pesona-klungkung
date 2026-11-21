@@ -1,0 +1,431 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import lambangKlungkung from "../assets/images/lambang-klungkung.png";
+import type { DashboardRole, DashboardTone } from "../data/dashboards";
+
+interface Props {
+  role: DashboardRole;
+}
+
+const { role } = Astro.props;
+
+const tones: Record<DashboardTone, { icon: string; badge: string; soft: string; accent: string }> = {
+  blue: {
+    icon: "bg-forest-100 text-forest-800",
+    badge: "bg-forest-50 text-forest-800",
+    soft: "bg-forest-50",
+    accent: "text-forest-700",
+  },
+  lavender: {
+    icon: "bg-clay-100 text-clay-700",
+    badge: "bg-[#F5F4FF] text-clay-700",
+    soft: "bg-[#F5F4FF]",
+    accent: "text-clay-700",
+  },
+  aqua: {
+    icon: "bg-[#DDF3F0] text-[#0F766E]",
+    badge: "bg-[#F0FAF8] text-[#0F766E]",
+    soft: "bg-[#F0FAF8]",
+    accent: "text-[#0F766E]",
+  },
+  navy: {
+    icon: "bg-forest-900 text-white",
+    badge: "bg-forest-900 text-white",
+    soft: "bg-forest-50",
+    accent: "text-forest-900",
+  },
+};
+
+const tone = tones[role.tone];
+
+const kpiTones = {
+  up: "bg-[#EAF7F6] text-[#0F766E]",
+  info: "bg-[#EDF5FD] text-[#164C82]",
+  warn: "bg-[#FFF1F0] text-[#A63B32]",
+  neutral: "bg-sand-100 text-muted",
+};
+
+const taskTones = {
+  warn: "bg-[#FFF1F0] text-[#A63B32]",
+  info: "bg-[#EDF5FD] text-[#164C82]",
+  ok: "bg-[#EAF7F6] text-[#0F766E]",
+};
+
+const chart = role.chart;
+
+const radius = 42;
+const circumference = 2 * Math.PI * radius;
+const ringDash = chart.type === "ring" ? (chart.value / 100) * circumference : 0;
+
+const barMax = chart.type === "bars" ? Math.max(...chart.values, 1) : 1;
+
+const areaWidth = 320;
+const areaHeight = 120;
+const areaPad = 10;
+const areaValues = chart.type === "area" ? chart.values : [];
+const areaMax = Math.max(...areaValues, 1);
+const areaMin = Math.min(...areaValues, 0);
+const areaRange = Math.max(areaMax - areaMin, 1);
+const areaPoints = areaValues.map((value, index) => {
+  const x = areaPad + (index * (areaWidth - areaPad * 2)) / Math.max(areaValues.length - 1, 1);
+  const y = areaHeight - areaPad - ((value - areaMin) / areaRange) * (areaHeight - areaPad * 2);
+  return { x, y };
+});
+const areaLine = areaPoints.map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+const areaPath =
+  areaPoints.length > 0
+    ? `${areaLine} L${areaWidth - areaPad} ${areaHeight - areaPad} L${areaPad} ${areaHeight - areaPad} Z`
+    : "";
+const areaGradient = `area-gradient-${role.id}`;
+
+const stackColors = ["bg-forest-600", "bg-honey-300", "bg-clay-200"];
+---
+
+<div
+  class="animate-fade overflow-hidden rounded-[1.6rem] border border-line bg-[#F7FAFE] shadow-lift [animation-duration:0.45s]"
+  role="group"
+  aria-label={`Ilustrasi dashboard ${role.label}`}
+>
+  <div class="flex items-center justify-between gap-3 border-b border-line bg-white/85 px-4 py-2.5">
+    <div class="flex min-w-0 items-center gap-2.5">
+      <span class="flex gap-1.5" aria-hidden="true">
+        <span class="size-2 rounded-full bg-[#C7D8EB]"></span>
+        <span class="size-2 rounded-full bg-[#D5E5F5]"></span>
+        <span class="size-2 rounded-full bg-[#A9DED7]"></span>
+      </span>
+      <span class="truncate text-[0.78rem] font-medium text-muted-soft">pesona.example/ruang-{role.id}</span>
+    </div>
+    <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-sand-100 px-2.5 py-1 text-[0.78rem] font-bold uppercase tracking-[0.09em] text-muted">
+      <Icon name="ph:eye" size={11} />
+      Ilustrasi
+    </span>
+  </div>
+
+  <div class="flex min-h-[31rem]">
+    <aside class="hidden w-[11.5rem] shrink-0 flex-col border-r border-line bg-white/60 p-3.5 lg:flex">
+      <div class="flex items-center gap-2 px-1.5">
+        <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-white p-0.5 ring-1 ring-line/80">
+          <Image
+            src={lambangKlungkung}
+            alt=""
+            width={64}
+            height={60}
+            format="webp"
+            quality={90}
+            class="h-full w-auto object-contain"
+          />
+        </span>
+        <div class="leading-none">
+          <p class="font-display text-[0.88rem] font-bold text-ink">PESONA</p>
+          <p class="mt-1 text-[0.64rem] font-semibold uppercase tracking-[0.09em] text-muted-soft">Ruang kerja</p>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-xl border border-line bg-white/75 p-2.5">
+        <div class="flex items-center gap-2">
+          <span class:list={["inline-flex size-7 items-center justify-center rounded-lg", tone.icon]}>
+            <Icon name={role.icon} size={14} />
+          </span>
+          <div class="min-w-0">
+            <p class="truncate text-[0.78rem] font-semibold text-ink">{role.workspace}</p>
+            <p class="mt-0.5 text-[0.66rem] text-muted-soft">Data ilustrasi</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="mt-4 space-y-0.5" aria-label={`Navigasi contoh ${role.label}`}>
+        {role.sidebar.map((item) => (
+          <a
+            href={item.href}
+            aria-current={item.active ? "true" : undefined}
+            class:list={[
+              "group flex items-center gap-2 rounded-lg px-2.5 py-2 text-[0.78rem] font-medium transition",
+              item.active ? tone.badge : "text-muted hover:bg-forest-50/70 hover:text-forest-800",
+            ]}
+          >
+            <Icon name={item.icon} size={13} />
+            {item.label}
+            <Icon
+              name="ph:arrow-up-right"
+              size={10}
+              class="ml-auto opacity-0 transition group-hover:opacity-70"
+            />
+          </a>
+        ))}
+      </nav>
+
+      <div class="mt-auto rounded-xl border border-line bg-white/70 p-2.5">
+        <p class="flex items-center gap-1.5 text-[0.78rem] font-semibold text-forest-700">
+          <Icon name="ph:lock-key" size={11} />
+          Mode ilustrasi
+        </p>
+        <p class="mt-1 text-[0.66rem] leading-4 text-muted-soft">Tidak ada akun atau data nyata.</p>
+      </div>
+    </aside>
+
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-white/70 px-3.5 py-2.5 sm:px-4">
+        <div class="flex min-w-0 items-center gap-2.5">
+          <span class="inline-flex size-7 shrink-0 items-center justify-center rounded-md bg-white p-0.5 ring-1 ring-line/80 lg:hidden">
+            <Image
+              src={lambangKlungkung}
+              alt=""
+              width={48}
+              height={45}
+              format="webp"
+              quality={90}
+              class="h-full w-auto object-contain"
+            />
+          </span>
+          <div class="min-w-0">
+            <p class="truncate text-[0.66rem] font-semibold text-ink">{role.workspace}</p>
+            <p class="text-[0.66rem] text-muted-soft">Ringkasan · ilustrasi</p>
+          </div>
+        </div>
+        <div class="flex shrink-0 items-center gap-1">
+          <span class="inline-flex size-7 items-center justify-center rounded-full border border-line bg-white text-muted">
+            <Icon name="ph:magnifying-glass" size={13} />
+          </span>
+          <span class="relative inline-flex size-7 items-center justify-center rounded-full border border-line bg-white text-muted">
+            <Icon name="ph:bell" size={13} />
+            <span class="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#D4685D]"></span>
+          </span>
+          <span class="ml-1 inline-flex size-7 items-center justify-center rounded-full bg-forest-100 text-[0.66rem] font-bold text-forest-800">
+            {role.avatar}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex gap-1.5 overflow-x-auto border-b border-line bg-white/55 px-3 py-2 lg:hidden" aria-label={`Menu contoh ${role.label}`}>
+        {role.sidebar.map((item) => (
+          <a
+            href={item.href}
+            aria-current={item.active ? "true" : undefined}
+            class:list={[
+              "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[0.62rem] font-semibold transition",
+              item.active ? tone.badge : "bg-paper text-muted hover:bg-forest-50 hover:text-forest-800",
+            ]}
+          >
+            <Icon name={item.icon} size={12} />
+            {item.label}
+          </a>
+        ))}
+      </div>
+
+      <div class="p-3.5 sm:p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p class="text-[0.64rem] font-bold uppercase tracking-[0.13em] text-muted-soft">Dashboard {role.label}</p>
+            <h3 class="mt-1 font-display text-[1.2rem] font-semibold leading-tight text-ink sm:text-[1.4rem]">
+              {role.greeting}
+            </h3>
+            <p class="mt-1 text-[0.78rem] leading-5 text-muted">{role.summary}</p>
+          </div>
+          <span class:list={["hidden items-center gap-1 rounded-full px-2.5 py-1 text-[0.78rem] font-bold sm:inline-flex", tone.badge]}>
+            <Icon name="ph:eye" size={11} />
+            Contoh tampilan
+          </span>
+        </div>
+
+        <div class="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+          {role.kpis.map((kpi) => (
+            <a
+              href={kpi.href}
+              class="group rounded-xl border border-line bg-white p-2.5 transition hover:border-forest-300 hover:bg-forest-50/30 sm:p-3.5"
+            >
+              <div class="flex items-start justify-between gap-1.5">
+                <span class:list={["inline-flex size-6 items-center justify-center rounded-lg sm:size-8", kpiTones[kpi.tone]]}>
+                  <Icon name={kpi.icon} size={13} />
+                </span>
+                <Icon
+                  name="ph:arrow-up-right"
+                  size={12}
+                  class="text-muted-soft transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-forest-700"
+                />
+              </div>
+              <p class="mt-2 truncate font-display text-[0.92rem] font-semibold leading-none text-ink sm:text-[1.15rem]">
+                {kpi.value}
+              </p>
+              <p class="mt-1 truncate text-[0.66rem] font-medium text-muted sm:text-[0.78rem]">{kpi.label}</p>
+              <p class="mt-0.5 hidden truncate text-[0.64rem] text-muted-soft sm:block">{kpi.meta}</p>
+            </a>
+          ))}
+        </div>
+
+        <div class="mt-3 grid gap-3 lg:grid-cols-[1.25fr_0.75fr]">
+          <div class="rounded-xl border border-line bg-white p-3.5 sm:p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-[0.78rem] font-semibold text-ink">{chart.title}</p>
+                <p class="mt-0.5 text-[0.78rem] text-muted-soft">{chart.subtitle}</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-forest-50 px-2 py-1 text-[0.64rem] font-bold text-forest-700">
+                <Icon name="ph:chart-line-up" size={10} />
+                Ilustrasi
+              </span>
+            </div>
+
+            {chart.type === "ring" && (
+              <div class="mt-3 flex items-center gap-5">
+                <div class="relative size-24 shrink-0">
+                  <svg viewBox="0 0 120 120" class="size-full -rotate-90" aria-hidden="true">
+                    <circle cx="60" cy="60" r={radius} fill="none" stroke="#E1E8F1" stroke-width="10"></circle>
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r={radius}
+                      fill="none"
+                      stroke="#1D5F9E"
+                      stroke-width="10"
+                      stroke-linecap="round"
+                      stroke-dasharray={`${ringDash} ${circumference}`}
+                    ></circle>
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center font-display text-lg font-semibold text-forest-900">
+                    {chart.center}
+                  </span>
+                </div>
+                <div>
+                  <p class="font-display text-2xl font-semibold text-forest-900">{chart.value}%</p>
+                  <p class="mt-1 text-[0.66rem] leading-5 text-muted">{chart.caption}</p>
+                  <span class="mt-2 inline-flex items-center gap-1 text-[0.64rem] font-semibold text-forest-700">
+                    Lanjut belajar
+                    <Icon name="ph:arrow-right" size={11} />
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {chart.type === "bars" && (
+              <div class="mt-4">
+                <div class="flex h-28 items-end gap-2">
+                  {chart.values.map((value, index) => (
+                    <div class="flex flex-1 flex-col items-center gap-1.5">
+                      <div class="flex h-24 w-full items-end rounded-t-md bg-forest-50">
+                        <div
+                          class="w-full rounded-t-md bg-linear-to-t from-forest-700 to-honey-400"
+                          style={`height:${Math.max(12, (value / barMax) * 100)}%`}
+                        ></div>
+                      </div>
+                      <span class="text-[0.78rem] font-medium text-muted-soft">{chart.labels[index]}</span>
+                    </div>
+                  ))}
+                </div>
+                <p class="mt-2 text-[0.78rem] text-muted-soft">{chart.caption}</p>
+              </div>
+            )}
+
+            {chart.type === "area" && (
+              <div class="mt-3">
+                <svg viewBox={`0 0 ${areaWidth} ${areaHeight}`} class="h-28 w-full" role="img" aria-label={chart.title}>
+                  <defs>
+                    <linearGradient id={areaGradient} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#2F78B7" stop-opacity="0.28"></stop>
+                      <stop offset="100%" stop-color="#2F78B7" stop-opacity="0"></stop>
+                    </linearGradient>
+                  </defs>
+                  <path d={`M${areaPad} ${areaHeight - areaPad}H${areaWidth - areaPad}`} stroke="#E1E8F1" stroke-width="1"></path>
+                  <path d={areaPath} fill={`url(#${areaGradient})`}></path>
+                  <path d={areaLine} fill="none" stroke="#1D5F9E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  {areaPoints.map((point) => (
+                    <circle cx={point.x} cy={point.y} r="2.4" fill="#FFFFFF" stroke="#1D5F9E" stroke-width="1.6"></circle>
+                  ))}
+                </svg>
+                <div class="mt-1 flex justify-between text-[0.78rem] text-muted-soft">
+                  {chart.labels.map((label) => <span>{label}</span>)}
+                </div>
+                <p class="mt-1.5 text-[0.78rem] text-muted-soft">{chart.caption}</p>
+              </div>
+            )}
+
+            {chart.type === "stack" && (
+              <div class="mt-4">
+                <div class="flex h-4 overflow-hidden rounded-full bg-line" aria-hidden="true">
+                  {chart.segments.map((segment, index) => (
+                    <span class={stackColors[index % stackColors.length]} style={`width:${segment.value}%`}></span>
+                  ))}
+                </div>
+                <div class="mt-3 space-y-1.5">
+                  {chart.segments.map((segment, index) => (
+                    <div class="flex items-center justify-between gap-3 text-[0.78rem]">
+                      <span class="flex items-center gap-1.5 text-muted">
+                        <span class:list={["size-2 rounded-full", stackColors[index % stackColors.length]]}></span>
+                        {segment.label}
+                      </span>
+                      <span class="font-semibold text-ink">{segment.suffix ?? `${segment.value}%`}</span>
+                    </div>
+                  ))}
+                </div>
+                <p class="mt-2.5 text-[0.78rem] leading-4 text-muted-soft">{chart.caption}</p>
+              </div>
+            )}
+
+            <div class="mt-4 grid grid-cols-3 gap-2 border-t border-line pt-3">
+              {role.insights.map((insight) => (
+                <div>
+                  <p class="text-[0.6rem] leading-4 text-muted-soft">{insight.label}</p>
+                  <p class="mt-1 text-[0.72rem] font-semibold text-ink">{insight.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-line bg-white p-3.5 sm:p-4">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-[0.78rem] font-semibold text-ink">Perlu perhatian</p>
+              <Icon name="ph:dots-three" size={14} class="text-muted-soft" />
+            </div>
+            <div class="mt-3 space-y-2">
+              {role.tasks.map((task) => (
+                <a
+                  href={task.href}
+                  class="group block rounded-lg border border-line/80 bg-[#FBFCFE] p-2.5 transition hover:border-forest-300 hover:bg-white"
+                >
+                  <div class="flex items-start gap-2">
+                    <span class="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-md bg-forest-50 text-forest-700">
+                      <Icon name={task.icon} size={11} />
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-[0.64rem] font-semibold leading-4 text-ink">{task.title}</p>
+                      <p class="mt-0.5 truncate text-[0.64rem] text-muted-soft">{task.meta}</p>
+                      <span class:list={["mt-1.5 inline-flex rounded-full px-1.5 py-0.5 text-[0.78rem] font-bold uppercase tracking-[0.04em]", taskTones[task.tone]]}>
+                        {task.status}
+                      </span>
+                    </div>
+                    <Icon
+                      name="ph:arrow-up-right"
+                      size={11}
+                      class="mt-0.5 shrink-0 text-muted-soft opacity-0 transition group-hover:opacity-70"
+                    />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-xl border border-line bg-white p-3.5 sm:p-4">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-[0.78rem] font-semibold text-ink">Aktivitas terbaru</p>
+            <span class="text-[0.66rem] font-medium text-muted-soft">Contoh</span>
+          </div>
+          <div class="mt-3 grid gap-2.5 sm:grid-cols-3">
+            {role.activity.map((item) => (
+              <div class="flex items-start gap-2">
+                <span class="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-700">
+                  <Icon name={item.icon} size={12} />
+                </span>
+                <div class="min-w-0">
+                  <p class="truncate text-[0.78rem] font-semibold text-ink">{item.title}</p>
+                  <p class="mt-0.5 truncate text-[0.64rem] text-muted-soft">{item.meta}</p>
+                </div>
+                <span class="ml-auto shrink-0 text-[0.78rem] text-muted-soft">{item.time}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

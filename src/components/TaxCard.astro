@@ -1,0 +1,93 @@
+---
+import type { TaxDisplay } from "../lib/content";
+import Icon from "./Icon.astro";
+
+interface Props {
+  tax: TaxDisplay;
+  featured?: boolean;
+  class?: string;
+}
+
+const { tax, featured = false, class: className = "" } = Astro.props;
+
+const tones: Record<string, { card: string; icon: string; accent: string; ring: string }> = {
+  forest: {
+    card: "bg-forest-900 text-white border-forest-900",
+    icon: "bg-white/10 text-honey-200",
+    accent: "text-honey-200",
+    ring: "group-hover:border-forest-900",
+  },
+  mint: {
+    card: "bg-[#EDF5FD] text-ink border-[#D9E7F5]",
+    icon: "bg-white text-forest-800",
+    accent: "text-forest-700",
+    ring: "group-hover:border-forest-300",
+  },
+  peach: {
+    card: "bg-[#F5F4FF] text-ink border-[#DEDCFA]",
+    icon: "bg-white text-clay-700",
+    accent: "text-clay-700",
+    ring: "group-hover:border-clay-300",
+  },
+  sand: {
+    card: "bg-[#F1FAF9] text-ink border-[#CFEAE6]",
+    icon: "bg-white text-[#0F766E]",
+    accent: "text-[#0F766E]",
+    ring: "group-hover:border-[#A9DED7]",
+  },
+  stone: {
+    card: "bg-[#F3F6FA] text-ink border-[#DDE7F2]",
+    icon: "bg-white text-[#516479]",
+    accent: "text-[#516479]",
+    ring: "group-hover:border-[#C9D5E3]",
+  },
+};
+
+const tone = tones[tax.toneName] ?? tones.forest;
+const isDark = tax.toneName === "forest";
+---
+
+<a
+  href={`/pajak/${tax.slug}`}
+  class:list={[
+    "reveal group relative flex h-full flex-col overflow-hidden rounded-card border p-6 transition duration-500 ease-soft hover:-translate-y-1 hover:shadow-lift",
+    tone.card,
+    tone.ring,
+    featured ? "sm:p-8" : "sm:p-6",
+    className,
+  ]}
+>
+  <div class="flex items-start justify-between gap-4">
+    <span class:list={["inline-flex size-11 items-center justify-center rounded-2xl transition duration-500 group-hover:scale-105", tone.icon]}>
+      <Icon name={tax.iconName} size={23} />
+    </span>
+    <span
+      class:list={[
+        "rounded-full px-3 py-1.5 text-sm font-bold tabular-nums",
+        isDark ? "bg-white/10 text-honey-200" : "bg-white/80 text-forest-900",
+      ]}
+    >
+      {tax.rate}
+    </span>
+  </div>
+
+  <h3 class:list={["mt-6 font-display font-semibold leading-tight", featured ? "text-[1.7rem]" : "text-[1.25rem]", isDark ? "text-white" : "text-ink"]}>
+    {tax.name}
+  </h3>
+  <p class:list={["mt-1.5 text-xs font-medium leading-6", isDark ? "text-forest-100/70" : "text-muted"]}>
+    {tax.long}
+  </p>
+  <p class:list={["mt-4 flex-1 text-sm leading-7", isDark ? "text-forest-100/75" : "text-muted", featured ? "line-clamp-4" : "line-clamp-3"]}>
+    {tax.summary}
+  </p>
+
+  <div class:list={["mt-6 flex items-center justify-between border-t pt-4", isDark ? "border-white/10" : "border-forest-950/10"]}>
+    <span class:list={["text-[0.7rem] font-medium", isDark ? "text-forest-100/75" : "text-muted"]}>
+      {tax.period}
+    </span>
+    <span class:list={["inline-flex items-center gap-1 text-xs font-semibold", tone.accent]}>
+      Pelajari
+      <Icon name="ph:arrow-right" size={14} class="transition duration-300 group-hover:translate-x-0.5" />
+    </span>
+  </div>
+</a>

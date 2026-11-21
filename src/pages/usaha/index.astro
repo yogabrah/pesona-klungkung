@@ -1,0 +1,309 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaPanel from "../../components/CtaPanel.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import ProviderCard from "../../components/ProviderCard.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import TrainingCard from "../../components/TrainingCard.astro";
+import { cooperative, providers, trainings, usahaStats } from "../../lib/content";
+
+const featuredProviders = providers.filter((provider) => provider.featured).slice(0, 3);
+const featuredTrainings = trainings.slice(0, 3);
+
+const site = Astro.site ?? new URL("https://pesona.example");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Citta Karya — Ekosistem Usaha PESONA",
+  description:
+    "Registry penyedia terverifikasi, pelatihan, sertifikasi, dan ruang koperasi untuk usaha lokal Kabupaten Klungkung.",
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Registry penyedia", url: new URL("/usaha/registry", site).toString() },
+      { "@type": "ListItem", position: 2, name: "Pelatihan & sertifikasi", url: new URL("/usaha/pelatihan", site).toString() },
+      { "@type": "ListItem", position: 3, name: "Ruang koperasi", url: new URL("/usaha/koperasi", site).toString() },
+    ],
+  },
+};
+---
+
+<BaseLayout
+  title="Usaha — Citta Karya"
+  description="Citta Karya menghubungkan registry penyedia terverifikasi, pelatihan, sertifikasi, dan ruang koperasi untuk usaha lokal Kabupaten Klungkung."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Citta Karya · Ekosistem usaha"
+    title="Dari formal,"
+    highlight="ke bertumbuh."
+    description="Setelah administrasi dasar siap, usaha lokal perlu ruang untuk terlihat, belajar, dan terhubung. Citta Karya merancang registry, pelatihan, sertifikasi, dan koperasi dalam satu ekosistem."
+    breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Usaha" }]}
+    icon="ph:storefront"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="/usaha/registry" class="btn btn-primary">
+        Lihat registry
+        <Icon name="ph:arrow-right" size={17} />
+      </a>
+      <a href="/usaha/pelatihan" class="btn btn-secondary">
+        Pelatihan &amp; sertifikasi
+        <Icon name="ph:graduation-cap" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-sand-50 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-honey-800">Ruang tumbuh</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">3 jalur usaha</p>
+        </div>
+        <Icon name="ph:chart-line-up" size={22} class="text-honey-700" />
+      </div>
+      <div class="divide-y divide-line">
+        {[
+          { title: "Registry penyedia", href: "/usaha/registry", icon: "ph:storefront" },
+          { title: "Pelatihan & sertifikasi", href: "/usaha/pelatihan", icon: "ph:graduation-cap" },
+          { title: "Ruang koperasi", href: "/usaha/koperasi", icon: "ph:users-three" },
+        ].map((item) => (
+          <a href={item.href} class="flex items-center gap-2.5 px-5 py-3.5 text-xs font-medium text-muted transition hover:bg-sand-50 hover:text-honey-800">
+            <Icon name={item.icon} size={15} class="shrink-0 text-honey-700" />
+            {item.title}
+            <Icon name="ph:arrow-up-right" size={12} class="ml-auto" />
+          </a>
+        ))}
+      </div>
+      <div class="grid grid-cols-3 divide-x divide-line border-t border-line text-center">
+        <div class="px-2 py-3"><p class="font-display text-lg font-semibold text-forest-800">{usahaStats.providers}</p><p class="text-[0.55rem] text-muted-soft">penyedia*</p></div>
+        <div class="px-2 py-3"><p class="font-display text-lg font-semibold text-forest-800">{usahaStats.bookings}</p><p class="text-[0.55rem] text-muted-soft">booking*</p></div>
+        <div class="px-2 py-3"><p class="font-display text-lg font-semibold text-forest-800">{usahaStats.cooperatives}</p><p class="text-[0.55rem] text-muted-soft">koperasi*</p></div>
+      </div>
+      <p class="border-t border-line px-5 py-2.5 text-[0.58rem] text-muted-soft">*Angka ilustrasi, bukan statistik resmi.</p>
+    </div>
+  </PageHero>
+
+  <!-- Tiga jalur -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Satu ekosistem"
+        title="Tiga ruang, satu identitas usaha."
+        description="Registry membuat usaha terlihat, pelatihan meningkatkan kapasitas, dan koperasi mengelola kepemilikan bersama."
+      />
+      <div class="mt-10 grid gap-4 lg:grid-cols-3">
+        {
+          [
+            {
+              href: "/usaha/registry",
+              icon: "ph:storefront",
+              label: "Registry",
+              title: "Usaha terverifikasi, lebih mudah ditemukan.",
+              text: "Dokumen dasar, komitmen layanan, dan status verifikasi yang bisa dibaca warga sebelum memesan.",
+              stat: `${providers.length} contoh penyedia`,
+            },
+            {
+              href: "/usaha/pelatihan",
+              icon: "ph:graduation-cap",
+              label: "Pelatihan",
+              title: "Kapasitas naik, layanan lebih siap.",
+              text: "Jalur belajar, praktik, dan sertifikasi bersama mitra untuk homestay, pemandu, dive, kuliner, dan digital.",
+              stat: `${trainings.length} contoh pelatihan`,
+            },
+            {
+              href: "/usaha/koperasi",
+              icon: "ph:users-three",
+              label: "Koperasi",
+              title: "Usaha warga, dikelola bersama.",
+              text: "Anggota, listing, booking, dan bagi hasil dalam satu ruang yang dapat diawasi bersama.",
+              stat: `${cooperative.members} anggota contoh`,
+            },
+          ].map((pillar) => (
+            <a href={pillar.href} class="group card card-hover flex h-full flex-col p-6">
+              <div class="flex items-start justify-between gap-3">
+                <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-sand-100 text-honey-800 transition group-hover:bg-honey-300 group-hover:text-forest-950">
+                  <Icon name={pillar.icon} size={24} />
+                </span>
+                <span class="badge bg-sand-100 text-honey-800">{pillar.label}</span>
+              </div>
+              <h3 class="mt-6 font-display text-xl font-semibold leading-tight text-ink">{pillar.title}</h3>
+              <p class="mt-3 flex-1 text-sm leading-7 text-muted">{pillar.text}</p>
+              <div class="mt-6 flex items-center justify-between border-t border-line pt-4">
+                <span class="text-[0.66rem] text-muted-soft">{pillar.stat}</span>
+                <span class="inline-flex size-8 items-center justify-center rounded-full bg-forest-50 text-forest-800 transition group-hover:bg-forest-800 group-hover:text-white">
+                  <Icon name="ph:arrow-up-right" size={15} />
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Formalisasi -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Alur formalisasi"
+        title="Lima langkah menjadi usaha yang siap."
+        description="Alur ini adalah gambaran umum. Kebutuhan dokumen dapat berbeda menurut jenis dan lokasi usaha."
+      />
+      <div class="mt-10 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        {
+          [
+            { step: "01", title: "Daftar akun", text: "Profil usaha dan kontak.", icon: "ph:user-plus" },
+            { step: "02", title: "Asesmen mandiri", text: "Cocokkan jenis kegiatan.", icon: "ph:list-checks" },
+            { step: "03", title: "Belajar & siapkan", text: "Jalur belajar dan checklist.", icon: "ph:book-open-text" },
+            { step: "04", title: "Verifikasi", text: "NIB, NPWPD, sertifikasi.", icon: "ph:seal-check" },
+            { step: "05", title: "Listing & booking", text: "Tampil dan menerima pesanan.", icon: "ph:storefront" },
+          ].map((item) => (
+            <div class="relative rounded-2xl border border-line bg-paper p-5">
+              <div class="flex items-center justify-between gap-3">
+                <span class="inline-flex size-9 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                  <Icon name={item.icon} size={17} />
+                </span>
+                <span class="font-display text-xs font-semibold text-muted-soft">{item.step}</span>
+              </div>
+              <h3 class="mt-4 text-sm font-semibold text-ink">{item.title}</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="fine-print mt-5">
+        PESONA tidak menerbitkan izin atau sertifikat. Verifikasi registry hanya untuk tampil di
+        katalog dan menerima booking, bukan pengganti kewenangan instansi.
+      </p>
+    </div>
+  </section>
+
+  <!-- Registry preview -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Registry penyedia"
+        title="Usaha lokal yang terlihat dan terpercaya."
+        description="Contoh tampilan registry dengan tiga tingkat verifikasi. Data dan nama pada bagian ini adalah ilustrasi."
+      >
+        <a slot="action" href="/usaha/registry" class="link-arrow mt-1">
+          Lihat semua penyedia
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </SectionHead>
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {featuredProviders.map((provider) => <ProviderCard provider={provider} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Komitmen -->
+  <section class="border-y border-line bg-sand-50/60 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Komitmen"
+        title="Bukan calo, bukan penerbit izin."
+        description="Kejelasan peran membuat ekosistem usaha dapat dipercaya oleh warga dan pelaku usaha."
+      >
+        <span slot="action" class="badge badge-sand">Anti-calo</span>
+      </SectionHead>
+      <div class="mt-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {
+          [
+            { title: "No license, no listing", text: "Hanya usaha dengan dokumen dasar yang lolos verifikasi tampil di registry.", icon: "ph:shield-check" },
+            { title: "Tarif publik", text: "Harga layanan ditampilkan. Tidak ada komisi per izin atau biaya tak resmi.", icon: "ph:money" },
+            { title: "Kuitansi resmi", text: "No receipt, no service. Pembayaran nyata hanya melalui kanal resmi.", icon: "ph:receipt" },
+            { title: "SLA 3×24 jam", text: "Konsultasi dan pengaduan memiliki target respons yang dapat dipantau.", icon: "ph:clock" },
+          ].map((item) => (
+            <div class="rounded-2xl border border-line bg-white/70 p-5">
+              <span class="inline-flex size-10 items-center justify-center rounded-xl bg-sand-100 text-honey-800">
+                <Icon name={item.icon} size={19} />
+              </span>
+              <h3 class="mt-4 text-sm font-semibold text-ink">{item.title}</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Pelatihan preview -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Pelatihan & sertifikasi"
+        title="Belajar bersama mitra yang tepat."
+        description="Contoh katalog pelatihan untuk meningkatkan standar layanan dan kesiapan usaha."
+      >
+        <a slot="action" href="/usaha/pelatihan" class="link-arrow mt-1">
+          Lihat semua pelatihan
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </SectionHead>
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {featuredTrainings.map((training) => <TrainingCard training={training} />)}
+      </div>
+      <p class="fine-print mt-6">
+        Jadwal, biaya, kuota, dan mitra adalah ilustrasi. Subsidi serta sertifikasi resmi mengikuti
+        ketentuan penyelenggara.
+      </p>
+    </div>
+  </section>
+
+  <!-- Koperasi -->
+  <section class="container-page pb-20">
+    <div class="surface-dark relative overflow-hidden rounded-[2rem] p-6 text-white sm:p-10">
+      <div class="pointer-events-none absolute inset-0 opacity-[0.12] dot-grid-light" aria-hidden="true"></div>
+      <div class="relative grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div>
+          <p class="eyebrow-light">
+            <span class="h-px w-7 bg-honey-300" aria-hidden="true"></span>
+            Ruang koperasi
+          </p>
+          <h2 class="display-md mt-4 text-white">Usaha warga, dikelola bersama.</h2>
+          <p class="lead-light mt-4">
+            Koperasi mendaftarkan anggota, mengelola katalog, dan menjalankan bagi hasil. PESONA
+            menyediakan kanal, data, dan pasar tanpa mengambil alih kepemilikan usaha.
+          </p>
+          <a href="/usaha/koperasi" class="btn btn-accent mt-6">
+            Pelajari ruang koperasi
+            <Icon name="ph:arrow-right" size={16} />
+          </a>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/[0.055] p-5">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-200/75">Contoh koperasi</p>
+              <p class="mt-1 font-display text-lg font-semibold text-white">{cooperative.name}</p>
+            </div>
+            <span class="badge-dark">Operator warga</span>
+          </div>
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            {cooperative.report.map((row) => (
+              <div class="rounded-xl bg-white/[0.055] p-3">
+                <p class="text-[0.62rem] text-forest-100/70">{row.label}</p>
+                <p class="mt-1 text-sm font-semibold text-white">{row.value}</p>
+              </div>
+            ))}
+          </div>
+          <p class="mt-4 text-[0.62rem] leading-5 text-forest-100/70">{cooperative.note}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Mulai dari satu langkah"
+    title="Punya usaha? Mulai dari pemahaman yang benar."
+    description="Pelajari alur formalisasi, siapkan dokumen, lalu ikuti jalur belajar. Setelah terverifikasi, usaha dapat tampil di registry dan menerima booking."
+    primaryLabel="Lihat registry"
+    primaryHref="/usaha/registry"
+    secondaryLabel="Mulai dari NPWPD"
+    secondaryHref="/layanan/daftar-npwpd"
+    note="Situs konsep · data ilustrasi · verifikasi nyata belum tersedia."
+  />
+</BaseLayout>
+
+

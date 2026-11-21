@@ -1,0 +1,38 @@
+{
+  "name": "PESONA — Pusat Edukasi & Optimalisasi Usaha",
+  "short_name": "PESONA",
+  "description": "Konsep platform edukasi pajak, layanan satu alur, dan penguatan usaha untuk Kabupaten Klungkung.",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": ".",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F8FAFD",
+  "theme_color": "#0B2C52",
+  "icons": [
+    {
+      "src": "favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo-klungkung.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

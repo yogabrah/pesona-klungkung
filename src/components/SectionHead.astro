@@ -1,0 +1,27 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  class?: string;
+  center?: boolean;
+}
+
+const { eyebrow, title, description, class: className = "", center = false } = Astro.props;
+---
+
+<div class:list={["reveal flex flex-col gap-5 md:flex-row md:items-end md:justify-between", className]}>
+  <div class:list={["max-w-2xl", center && "mx-auto text-center"]}>
+    {
+      eyebrow && (
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          {eyebrow}
+        </p>
+      )
+    }
+    <h2 class:list={["display-md mt-3", center && "mx-auto"]}>{title}</h2>
+    {description && <p class="lead mt-4 text-[1rem] sm:text-[1.08rem]">{description}</p>}
+  </div>
+  <slot name="action" />
+</div>

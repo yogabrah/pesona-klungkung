@@ -1,0 +1,721 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
+import CtaPanel from "../components/CtaPanel.astro";
+import FaqList from "../components/FaqList.astro";
+import FlowIllustration from "../components/FlowIllustration.astro";
+import Icon from "../components/Icon.astro";
+import SectionHead from "../components/SectionHead.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import TaxCard from "../components/TaxCard.astro";
+import { CITTAS, HOME_FAQ, HOME_STATS, IMPACT } from "../data/site";
+import { SERVICES } from "../data/services";
+import { articles, providers, taxList, usahaStats } from "../lib/content";
+import heroImage from "../assets/images/hero-nusa-penida.jpg";
+import sawahImage from "../assets/images/sawah-klungkung.jpg";
+
+const featuredArticles = articles.filter((article) => article.featured || ["daftar-npwpd", "bayar-qris"].includes(article.id)).slice(0, 3);
+const featuredProviders = providers.slice(0, 3);
+const [firstTax, secondTax, thirdTax, ...restTaxes] = taxList;
+
+const cittaStyles = {
+  forest: {
+    card: "border-forest-900 bg-forest-900 text-white",
+    icon: "bg-white/10 text-honey-200",
+    meaning: "text-honey-200",
+    heading: "text-white",
+    description: "text-forest-100/80",
+    tag: "border-white/10 bg-white/5 text-forest-100/80",
+    cta: "text-honey-200",
+    number: "text-forest-100/80",
+  },
+  sand: {
+    card: "border-forest-200 bg-[#EDF5FD] text-ink",
+    icon: "bg-white/90 text-forest-700",
+    meaning: "text-forest-700",
+    heading: "text-ink",
+    description: "text-muted",
+    tag: "border-forest-200 bg-white/70 text-forest-700",
+    cta: "text-forest-700",
+    number: "text-forest-700",
+  },
+  peach: {
+    card: "border-clay-200 bg-[#F5F4FF] text-ink",
+    icon: "bg-white/80 text-clay-700",
+    meaning: "text-clay-700",
+    heading: "text-ink",
+    description: "text-muted",
+    tag: "border-clay-200 bg-white/60 text-clay-700",
+    cta: "text-clay-700",
+    number: "text-clay-700",
+  },
+} as const;
+
+const providerIcons: Record<string, string> = {
+  homestay: "ph:bed",
+  guide: "ph:compass",
+  dive: "ph:waves",
+  kuliner: "ph:fork-knife",
+  boat: "ph:boat",
+};
+---
+
+<BaseLayout
+  title="PESONA"
+  description="PESONA menyatukan edukasi pajak, layanan administrasi, dan penguatan usaha dalam satu alur untuk warga, pelaku usaha, dan koperasi di Kabupaten Klungkung."
+>
+  <!-- ------------------------------------------------------------------ -->
+  <!-- HERO                                                               -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="surface-hero relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.16] dot-grid" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -left-44 top-28 size-[32rem] rounded-full bg-clay-200/30 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -right-44 -top-24 size-[38rem] rounded-full bg-honey-200/35 blur-3xl" aria-hidden="true"></div>
+
+    <div class="hero-frame container-page relative flex min-h-[calc(100svh-7rem)] flex-col justify-center pb-14 pt-8 sm:pt-10 lg:pb-20 lg:pt-8">
+      <div class="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
+        <div class="animate-rise">
+          <div class="inline-flex flex-wrap items-center gap-2 rounded-full border border-forest-200/80 bg-white/70 px-3 py-1.5 shadow-sm backdrop-blur">
+            <span class="inline-flex items-center gap-1.5 text-[0.64rem] font-bold uppercase tracking-[0.14em] text-forest-800">
+              <span class="size-1.5 rounded-full bg-honey-500"></span>
+              Konsep platform
+            </span>
+            <span class="h-3 w-px bg-forest-200" aria-hidden="true"></span>
+            <span class="text-[0.66rem] font-medium text-muted">Kabupaten Klungkung</span>
+          </div>
+
+          <h1 class="hero-headline display-xl mt-6 sm:mt-7">
+            Pajak dan usaha,<br />
+            <span class="relative inline-block bg-linear-to-r from-forest-800 via-forest-700 to-honey-600 bg-clip-text text-transparent">
+              tumbuh bersama.
+              <svg
+                class="absolute -bottom-2 left-0 w-[88%] text-honey-400 sm:-bottom-3"
+                viewBox="0 0 420 18"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M5 12C92 5 232 2 414 7" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+              </svg>
+            </span>
+          </h1>
+
+          <p class="hero-lead lead mt-6 max-w-[34rem]">
+            Satu kanal untuk belajar pajak, mengurus layanan, dan menumbuhkan usaha. PESONA
+            menyatukan tiga kebutuhan warga dan pelaku usaha Klungkung dalam alur yang jelas.
+          </p>
+
+          <div class="hero-actions mt-7 flex flex-wrap gap-2 sm:mt-8 sm:gap-2.5">
+            <a href="#cara-kerja" class="hero-cta btn btn-primary btn-lg max-sm:px-3.5 max-sm:py-3 max-sm:text-[0.8rem]">
+              Pahami cara kerjanya
+              <Icon name="ph:arrow-down" size={17} />
+            </a>
+            <a href="/layanan" class="hero-cta btn btn-secondary btn-lg max-sm:px-3.5 max-sm:py-3 max-sm:text-[0.8rem]">
+              Jelajahi layanan
+              <Icon name="ph:arrow-right" size={17} />
+            </a>
+          </div>
+
+          <p class="hero-note mt-5 flex items-center gap-2 text-xs leading-5 text-muted-soft">
+            <Icon name="ph:info" size={15} class="shrink-0" />
+            Situs konsep · belum terhubung ke sistem resmi · data ilustrasi
+          </p>
+
+          <div class="mt-7 hidden flex-wrap items-center gap-x-5 gap-y-2 border-t border-line/80 pt-5 lg:flex">
+            {
+              CITTAS.map((citta, index) => (
+                <>
+                  {index > 0 && <span class="h-3 w-px bg-line-strong" aria-hidden="true" />}
+                  <span class="inline-flex items-center gap-2 text-[0.68rem] font-semibold text-muted">
+                    <Icon name={citta.icon} size={15} class="text-forest-700" />
+                    {citta.name}
+                  </span>
+                </>
+              ))
+            }
+          </div>
+
+          <div class="hero-mobile-flow mt-5 rounded-2xl border border-line bg-white/70 p-3 shadow-soft backdrop-blur lg:hidden [@media(max-height:700px)]:hidden">
+            <div class="flex items-center justify-between gap-2 px-1">
+              <p class="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-forest-700">Satu alur</p>
+              <span class="text-[0.58rem] font-semibold text-muted-soft">3 pilar</span>
+            </div>
+            <div class="mt-2.5 grid grid-cols-3 gap-1.5">
+              {
+                CITTAS.map((citta) => (
+                  <div class="rounded-xl bg-forest-50/80 px-2 py-2.5 text-center">
+                    <Icon name={citta.icon} size={16} class="mx-auto text-forest-700" />
+                    <p class="mt-1.5 text-[0.6rem] font-semibold leading-4 text-forest-900">{citta.name}</p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="relative hidden animate-rise delay-200 lg:block">
+          <div class="relative mx-auto max-w-[31rem] mb-8">
+            <div class="absolute -inset-4 rounded-[2.5rem] bg-linear-to-br from-honey-200/50 via-clay-200/30 to-transparent blur-2xl" aria-hidden="true"></div>
+            <figure class="relative overflow-hidden rounded-[1.85rem] border border-white/80 bg-forest-900 shadow-lift">
+              <Image
+                src={heroImage}
+                alt="Tebing dan laut Nusa Penida di Kabupaten Klungkung"
+                width={960}
+                height={1200}
+                widths={[480, 720, 960]}
+                sizes="(min-width: 1024px) 31rem, 92vw"
+                format="webp"
+                quality={82}
+                class="h-[clamp(21rem,52svh,31rem)] w-full object-cover"
+                loading="eager"
+                fetchpriority="high"
+                decoding="sync"
+              />
+              <div
+                class="absolute inset-0"
+                style="background: linear-gradient(180deg, rgba(7,30,58,0.02) 38%, rgba(7,30,58,0.28) 70%, rgba(7,30,58,0.82) 100%);"
+              ></div>
+              <figcaption class="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-forest-950/45 px-3 py-1.5 text-[0.66rem] font-semibold text-white backdrop-blur-md">
+                  <Icon name="ph:map-pin" size={13} class="text-honey-300" />
+                  Nusa Penida, Klungkung
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-white backdrop-blur-md">
+                  <Icon name="ph:seal-check" size={13} class="text-honey-300" />
+                  TRI CITTA
+                </span>
+              </figcaption>
+            </figure>
+
+            <div class="relative z-10 mt-4 rounded-2xl border border-line bg-paper/95 p-4 shadow-soft backdrop-blur sm:absolute sm:-bottom-8 sm:-left-5 sm:mt-0 sm:w-[17.8rem]">
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-[0.62rem] font-bold uppercase tracking-[0.15em] text-forest-700">Satu alur</p>
+                <span class="rounded-full bg-forest-50 px-2 py-0.5 text-[0.58rem] font-bold text-forest-700">3 pilar</span>
+              </div>
+              <div class="mt-3 space-y-2">
+                {
+                  CITTAS.map((citta, index) => (
+                    <div class="flex items-center gap-2.5">
+                      <span class="inline-flex size-7 items-center justify-center rounded-lg bg-forest-50 text-forest-700">
+                        <Icon name={citta.icon} size={14} />
+                      </span>
+                      <span class="flex-1 text-[0.7rem] font-semibold text-ink">{citta.name}</span>
+                      <span class="text-[0.58rem] font-bold tabular-nums text-muted-soft">0{index + 1}</span>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="#gambaran"
+        class="absolute bottom-5 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[0.65rem] font-medium text-muted-soft transition hover:text-forest-800 [@media(max-height:700px)]:hidden"
+      >
+        <span>Gulir untuk mengenal PESONA</span>
+        <span class="flex h-8 w-5 items-start justify-center rounded-full border border-line-strong p-1">
+          <span class="animate-scroll-cue size-1.5 rounded-full bg-honey-500"></span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- GAMBARAN PLATFORM                                                  -->
+  <!-- ------------------------------------------------------------------ -->
+  <section id="gambaran" class="border-y border-line bg-white/55 scroll-mt-24" aria-labelledby="gambaran-title">
+    <h2 id="gambaran-title" class="sr-only">Gambaran platform PESONA</h2>
+    <div class="container-page">
+      <div class="grid grid-cols-2 divide-x divide-line lg:grid-cols-4">
+        {
+          HOME_STATS.map((stat, index) => (
+            <div class:list={["reveal px-5 py-6 sm:px-7", index >= 2 && "border-t border-line lg:border-t-0"]}>
+              <p class="font-display text-[2rem] font-semibold leading-none tracking-[-0.04em] text-forest-800 sm:text-[2.4rem]">
+                {stat.value}
+              </p>
+              <p class="mt-2 text-[0.72rem] font-semibold text-ink">{stat.label}</p>
+              <p class="mt-1 text-[0.65rem] text-muted-soft">{stat.note}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <nav class="flex flex-wrap items-center gap-2 border-t border-line py-4" aria-label="Akses cepat">
+        <span class="mr-1 text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-muted-soft">Mulai dari</span>
+        <a href="/kalkulator" class="chip transition hover:border-forest-300 hover:text-forest-800">
+          <Icon name="ph:calculator" size={14} class="text-forest-700" />
+          Hitung pajak
+        </a>
+        <a href="/layanan/daftar-npwpd" class="chip transition hover:border-forest-300 hover:text-forest-800">
+          <Icon name="ph:identification-card" size={14} class="text-forest-700" />
+          Daftar NPWPD
+        </a>
+        <a href="/layanan/cek-status" class="chip transition hover:border-forest-300 hover:text-forest-800">
+          <Icon name="ph:magnifying-glass" size={14} class="text-forest-700" />
+          Cek status
+        </a>
+        <a href="/usaha/registry" class="chip transition hover:border-forest-300 hover:text-forest-800">
+          <Icon name="ph:storefront" size={14} class="text-forest-700" />
+          Registry usaha
+        </a>
+        <a href="/dashboard" class="chip transition hover:border-forest-300 hover:text-forest-800">
+          <Icon name="ph:squares-four" size={14} class="text-forest-700" />
+          Contoh dashboard
+        </a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- TIGA CITTA                                                         -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="TRI CITTA MAHOTTAMA"
+        title="Satu niat, tiga cara melayani."
+        description="Tiga pilar PESONA saling terhubung: belajar sebelum mengurus, mengurus dalam satu pintu, lalu tumbuh melalui ekosistem usaha."
+      >
+        <a slot="action" href="/tentang" class="link-arrow mt-1">
+          Kenali konsepnya
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </SectionHead>
+
+      <div class="mt-10 grid gap-4 lg:grid-cols-3">
+        {
+          CITTAS.map((citta) => {
+            const style = cittaStyles[citta.tone];
+            return (
+              <a
+                href={citta.href}
+                class:list={[
+                  "reveal group relative flex h-full flex-col overflow-hidden rounded-card border p-6 transition duration-500 ease-soft hover:-translate-y-1 hover:shadow-lift sm:p-7",
+                  style.card,
+                ]}
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <span class:list={["inline-flex size-12 items-center justify-center rounded-2xl", style.icon]}>
+                    <Icon name={citta.icon} size={24} />
+                  </span>
+                  <span class:list={["font-display text-xs font-bold tracking-[0.16em]", style.number]}>
+                    {citta.number}
+                  </span>
+                </div>
+                <div class="relative mt-7">
+                  <p class:list={["text-[0.68rem] font-bold uppercase tracking-[0.14em]", style.meaning]}>
+                    {citta.meaning}
+                  </p>
+                  <h3 class:list={["mt-2 font-display text-[1.65rem] font-semibold leading-tight", style.heading]}>{citta.name}</h3>
+                  <p class:list={["mt-4 text-sm leading-7", style.description]}>{citta.description}</p>
+                </div>
+                <div class="relative mt-6 flex flex-wrap gap-1.5">
+                  {citta.tags.map((tag) => (
+                    <span class:list={["rounded-full border px-2.5 py-1 text-[0.62rem] font-semibold", style.tag]}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div class="relative mt-auto flex items-center justify-between border-t border-current/10 pt-5">
+                  <span class:list={["text-xs font-bold", style.cta]}>{citta.cta}</span>
+                  <span class="inline-flex size-8 items-center justify-center rounded-full border border-current/15 transition duration-300 group-hover:translate-x-0.5">
+                    <Icon name="ph:arrow-up-right" size={15} />
+                  </span>
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- CARA KERJA                                                         -->
+  <!-- ------------------------------------------------------------------ -->
+  <section id="cara-kerja" class="surface-dark relative scroll-mt-24 overflow-hidden text-white">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.12] dot-grid-light" aria-hidden="true"></div>
+    <div class="container-page section-pad relative">
+      <div class="grid gap-7 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div class="max-w-3xl">
+          <p class="eyebrow-light">
+            <span class="h-px w-7 bg-honey-300" aria-hidden="true"></span>
+            Cara kerja
+          </p>
+          <h2 class="display-md mt-4 text-white">Satu alur, dari kebutuhan sampai manfaat.</h2>
+          <p class="lead-light mt-5">
+            PESONA tidak menambah jalur baru. Ia merapikan pengalaman yang sudah ada: belajar
+            sebelum mengurus, satu identitas untuk seluruh layanan, dan ekosistem yang membantu
+            usaha setelah kewajiban tertib.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2.5">
+          <a href="/dashboard" class="btn btn-accent shrink-0">
+            Lihat dashboard per peran
+            <Icon name="ph:squares-four" size={16} />
+          </a>
+          <a href="/tentang" class="btn btn-ghost-light shrink-0">
+            Kenali tujuan PESONA
+            <Icon name="ph:arrow-right" size={17} />
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-9 grid gap-3 sm:grid-cols-3">
+        {
+          [
+            {
+              title: "Belajar dulu, bukan menebak",
+              text: "Materi dan kalkulator membantu memahami kewajiban sebelum mengisi formulir.",
+              icon: "ph:book-open-text",
+            },
+            {
+              title: "Satu identitas, satu data",
+              text: "Data usaha tidak perlu diulang dari awal di setiap layanan.",
+              icon: "ph:identification-card",
+            },
+            {
+              title: "Tumbuh setelah tertib",
+              text: "Registry, pelatihan, dan koperasi menjadi lanjutan setelah administrasi dasar siap.",
+              icon: "ph:chart-line-up",
+            },
+          ].map((item) => (
+            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-honey-300">
+                  <Icon name={item.icon} size={16} />
+                </span>
+                <p class="text-sm font-semibold text-white">{item.title}</p>
+              </div>
+              <p class="mt-2 text-xs leading-6 text-forest-100/70">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-9">
+        <FlowIllustration />
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- LAYANAN                                                            -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Citta Seva"
+        title="Enam layanan, satu cara memahami."
+        description="Setiap layanan menjelaskan tujuan, langkah, dokumen, dan batasannya sebelum Anda mulai. Tidak ada istilah yang dibiarkan menggantung."
+      >
+        <a slot="action" href="/layanan" class="link-arrow mt-1">
+          Lihat semua layanan
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </SectionHead>
+
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {SERVICES.map((service, index) => <ServiceCard service={service} index={index + 1} />)}
+      </div>
+
+      <p class="fine-print mt-6">
+        Seluruh fitur layanan masih dalam tahap pengembangan. Halaman ini menjelaskan rencana alur
+        dan manfaatnya, bukan formulir atau pembayaran aktif.
+      </p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- PAJAK                                                              -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Pajak daerah"
+        title="Lima pajak, dijelaskan tanpa rumit."
+        description="Dari warung sampai penginapan, pahami objek, tarif, dan cara melaporkannya. Angka simulasi selalu diberi label."
+      >
+        <a slot="action" href="/pajak" class="link-arrow mt-1">
+          Lihat semua jenis pajak
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </SectionHead>
+
+      <div class="mt-10 grid gap-4 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <TaxCard tax={firstTax} featured class="h-full" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:col-span-7 lg:grid-cols-2">
+          <TaxCard tax={secondTax} />
+          <TaxCard tax={thirdTax} />
+          {restTaxes.map((tax) => <TaxCard tax={tax} />)}
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col items-start justify-between gap-4 rounded-2xl border border-forest-200 bg-forest-50 p-5 sm:flex-row sm:items-center">
+        <div class="flex items-start gap-3">
+          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-forest-800">
+            <Icon name="ph:calculator" size={20} />
+          </span>
+          <div>
+            <p class="text-sm font-semibold text-forest-900">Belum yakin dengan perhitungan Anda?</p>
+            <p class="mt-1 text-xs leading-6 text-muted">Coba kalkulator simulasi, lalu konsultasikan hasilnya ke petugas.</p>
+          </div>
+        </div>
+        <a href="/kalkulator" class="btn btn-primary btn-sm shrink-0">
+          Buka kalkulator
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- MANFAAT                                                            -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="section-pad">
+    <div class="container-page grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+      <figure class="reveal relative order-2 lg:order-1">
+        <div class="absolute -inset-4 rounded-[2.5rem] bg-forest-100/60 blur-2xl" aria-hidden="true"></div>
+        <div class="relative overflow-hidden rounded-[2rem] border border-line shadow-soft">
+          <Image
+            src={sawahImage}
+            alt="Sawah bertingkat di Kabupaten Klungkung"
+            width={1000}
+            height={750}
+            widths={[560, 840, 1000]}
+            sizes="(min-width: 1024px) 44vw, 92vw"
+            format="webp"
+            quality={80}
+            class="h-[22rem] w-full object-cover sm:h-[28rem]"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 45%, rgba(7,30,58,0.72) 100%);"></div>
+          <figcaption class="absolute inset-x-5 bottom-5 flex items-end justify-between gap-4">
+            <p class="max-w-[18rem] font-display text-[1.15rem] font-semibold leading-snug text-white">
+              Pajak yang kembali menjadi layanan dan ruang tumbuh.
+            </p>
+            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur">
+              <Icon name="ph:bank" size={19} />
+            </span>
+          </figcaption>
+        </div>
+      </figure>
+
+      <div class="reveal order-1 lg:order-2">
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Manfaat untuk Klungkung
+        </p>
+        <h2 class="display-md mt-4">Pajak bukan tujuan akhir. Layanan adalah hasilnya.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          PESONA ingin membuat hubungan antara kewajiban dan manfaat terasa lebih jelas. Setiap
+          rupiah yang tertib dikelola seharusnya kembali dalam bentuk layanan yang bisa dirasakan.
+        </p>
+
+        <div class="mt-8 space-y-3">
+          {
+            IMPACT.map((item, index) => (
+              <div class="flex gap-4 rounded-2xl border border-line bg-white/65 p-4">
+                <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                  <Icon name={item.icon} size={19} />
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[0.6rem] font-bold tabular-nums text-muted-soft">0{index + 1}</span>
+                    <h3 class="text-sm font-semibold text-ink">{item.title}</h3>
+                  </div>
+                  <p class="mt-1 text-xs leading-6 text-muted">{item.description}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <p class="fine-print mt-5">
+          Ilustrasi hubungan manfaat, bukan rincian APBD. Persentase dan proyek nyata mengikuti
+          dokumen anggaran resmi.
+        </p>
+        <a href="/pajak" class="link-arrow mt-5">
+          Pelajari pajak daerah
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- CITTA KARYA                                                        -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="border-y border-line bg-sand-50/70 section-pad">
+    <div class="container-page grid items-center gap-12 lg:grid-cols-[0.92fr_1.08fr]">
+      <div class="reveal">
+        <p class="eyebrow">
+          <Icon name="ph:storefront" size={15} class="text-honey-600" />
+          Citta Karya
+        </p>
+        <h2 class="display-md mt-4">Dari formal, ke bertumbuh.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Setelah administrasi dasar siap, usaha lokal perlu ruang untuk terlihat, belajar, dan
+          terhubung. PESONA merancang registry, pelatihan, sertifikasi, dan koperasi dalam satu
+          ekosistem.
+        </p>
+
+        <div class="mt-8 grid grid-cols-3 gap-4">
+          <div>
+            <p class="font-display text-[1.8rem] font-semibold leading-none text-forest-800">{usahaStats.providers}</p>
+            <p class="mt-2 text-[0.65rem] leading-5 text-muted">penyedia contoh</p>
+          </div>
+          <div>
+            <p class="font-display text-[1.8rem] font-semibold leading-none text-forest-800">{usahaStats.cooperatives}</p>
+            <p class="mt-2 text-[0.65rem] leading-5 text-muted">ruang koperasi</p>
+          </div>
+          <div>
+            <p class="font-display text-[1.8rem] font-semibold leading-none text-forest-800">{usahaStats.trainingParticipants}</p>
+            <p class="mt-2 text-[0.65rem] leading-5 text-muted">peserta pelatihan</p>
+          </div>
+        </div>
+
+        <p class="mt-3 text-[0.65rem] text-muted-soft">Angka ilustrasi, bukan statistik resmi.</p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/usaha" class="btn btn-primary">
+            Jelajahi Citta Karya
+            <Icon name="ph:arrow-right" size={17} />
+          </a>
+          <a href="/usaha/registry" class="btn btn-secondary">Lihat registry</a>
+        </div>
+      </div>
+
+      <div class="reveal relative">
+        <div class="absolute -inset-3 rounded-[2.2rem] bg-honey-200/30 blur-2xl" aria-hidden="true"></div>
+        <div class="relative overflow-hidden rounded-[1.75rem] border border-line bg-white/90 shadow-lift">
+          <div class="flex items-center justify-between gap-3 border-b border-line bg-paper/85 px-5 py-4">
+            <div class="flex items-center gap-2.5">
+              <span class="flex gap-1.5" aria-hidden="true">
+                <span class="size-2 rounded-full bg-[#B7C8E4]"></span>
+                <span class="size-2 rounded-full bg-[#C7D8EB]"></span>
+                <span class="size-2 rounded-full bg-[#9DB9D6]"></span>
+              </span>
+              <p class="text-xs font-semibold text-ink">Registry penyedia</p>
+            </div>
+            <span class="badge bg-sand-100 text-honey-800">Data ilustrasi</span>
+          </div>
+
+          <div class="p-3 sm:p-4">
+            <div class="space-y-2.5">
+              {
+                featuredProviders.map((provider) => (
+                  <div class="flex items-center gap-3 rounded-xl border border-line bg-paper/60 p-3">
+                    <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
+                      <Icon name={providerIcons[provider.category] ?? "ph:storefront"} size={19} />
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-[0.8rem] font-semibold text-ink">{provider.name}</p>
+                      <p class="mt-0.5 text-[0.65rem] text-muted">{provider.categoryLabel} · {provider.area}</p>
+                    </div>
+                    <span class="hidden items-center gap-1 rounded-full bg-forest-50 px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.05em] text-forest-700 sm:inline-flex">
+                      <Icon name="ph:seal-check" size={12} />
+                      Terverifikasi
+                    </span>
+                    <Icon name="ph:caret-right" size={14} class="text-muted-soft" />
+                  </div>
+                ))
+              }
+            </div>
+
+            <div class="mt-3 grid gap-2.5 sm:grid-cols-2">
+              <div class="rounded-xl bg-forest-50 p-3.5">
+                <div class="flex items-center gap-2 text-forest-800">
+                  <Icon name="ph:graduation-cap" size={17} />
+                  <p class="text-[0.7rem] font-semibold">Pelatihan &amp; sertifikasi</p>
+                </div>
+                <p class="mt-1.5 text-[0.65rem] leading-5 text-muted">Contoh jadwal, kuota, dan pendampingan.</p>
+              </div>
+              <div class="rounded-xl bg-sand-100/60 p-3.5">
+                <div class="flex items-center gap-2 text-honey-800">
+                  <Icon name="ph:users-three" size={17} />
+                  <p class="text-[0.7rem] font-semibold">Ruang koperasi</p>
+                </div>
+                <p class="mt-1.5 text-[0.65rem] leading-5 text-muted">Anggota, listing, dan bagi hasil.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- EDUKASI                                                            -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Citta Vidya"
+        title="Belajar lima menit, bukan lima jam."
+        description="Materi singkat tanpa istilah rumit. Pilih topik yang paling dekat dengan kebutuhan usaha Anda."
+      >
+        <a slot="action" href="/edukasi" class="link-arrow mt-1">
+          Buka pusat edukasi
+          <Icon name="ph:arrow-right" size={15} />
+        </a>
+      </SectionHead>
+
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {featuredArticles.map((article) => <ArticleCard article={article} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- FAQ                                                                -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <div class="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+        <div>
+          <p class="eyebrow">
+            <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+            Pertanyaan umum
+          </p>
+          <h2 class="display-md mt-4">Hal yang sering ditanyakan.</h2>
+          <p class="mt-5 text-sm leading-7 text-muted">
+            PESONA berada pada tahap konsep. Jawaban di bawah menjelaskan peran, batas, dan status
+            pengembangannya.
+          </p>
+          <div class="mt-7 rounded-2xl border border-line bg-paper p-5">
+            <p class="flex items-center gap-2 text-xs font-semibold text-forest-800">
+              <Icon name="ph:chat-circle-text" size={16} />
+              Masih ada pertanyaan?
+            </p>
+            <p class="mt-2 text-xs leading-6 text-muted">
+              Baca alur konsultasi atau hubungi kanal resmi saat layanan dibuka.
+            </p>
+            <a href="/layanan/konsultasi" class="link-arrow mt-3">
+              Lihat alur konsultasi
+              <Icon name="ph:arrow-right" size={14} />
+            </a>
+          </div>
+        </div>
+        <FaqList items={HOME_FAQ} />
+      </div>
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Mulai dari satu langkah"
+    title="Pahami dulu, urus kemudian, tumbuh bersama."
+    description="Jelajahi layanan yang sedang dirancang atau lihat peta jalan pengembangan PESONA. Akun warga dan pelaku usaha akan dibuka secara bertahap."
+    primaryLabel="Jelajahi layanan"
+    primaryHref="/layanan"
+    secondaryLabel="Lihat peta jalan"
+    secondaryHref="/tentang#pengembangan"
+    note="Situs konsep · bukan layanan resmi · seluruh data adalah ilustrasi."
+  />
+</BaseLayout>
+

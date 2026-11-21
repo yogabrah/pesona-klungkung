@@ -1,0 +1,343 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaPanel from "../../components/CtaPanel.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import ProviderCard from "../../components/ProviderCard.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import { providers, usahaCategories } from "../../lib/content";
+
+const areas = Array.from(new Set(providers.map((provider) => provider.area)));
+const categoryCounts = Object.fromEntries(
+  usahaCategories.map((category) => [
+    category.id,
+    category.id === "all" ? providers.length : providers.filter((provider) => provider.category === category.id).length,
+  ]),
+);
+
+const categoryIcons: Record<string, string> = {
+  all: "ph:list-dashes",
+  homestay: "ph:house",
+  guide: "ph:map-pin",
+  dive: "ph:waves",
+  kuliner: "ph:fork-knife",
+  boat: "ph:boat",
+};
+
+const levels = [
+  {
+    level: "01",
+    title: "Terverifikasi dasar",
+    description: "NIB dan identitas usaha sudah dicocokkan. Usaha dapat mulai ditampilkan dengan catatan kelengkapan.",
+    icon: "ph:identification-card",
+  },
+  {
+    level: "02",
+    title: "Terverifikasi",
+    description: "NIB, NPWPD, dan komitmen layanan sudah diperiksa. Status ini menjadi syarat utama tampil di registry.",
+    icon: "ph:seal-check",
+  },
+  {
+    level: "03",
+    title: "Terverifikasi lanjutan",
+    description: "Dokumen lengkap, sertifikasi kompetensi, dan riwayat layanan baik. Bukan jaminan mutu di luar komitmen.",
+    icon: "ph:medal",
+  },
+];
+---
+
+<BaseLayout
+  title="Registry Penyedia Usaha"
+  description="Contoh registry penyedia usaha Kabupaten Klungkung dengan status verifikasi, kategori, wilayah, dan komitmen layanan. Seluruh data adalah ilustrasi."
+>
+  <PageHero
+    eyebrow="Citta Karya · Registry"
+    title="Usaha lokal,"
+    highlight="lebih mudah ditemukan."
+    description="Registry adalah katalog usaha yang dokumen dasar dan komitmen layanannya sudah diperiksa. Status verifikasi membantu warga membedakan usaha formal dari yang belum lengkap."
+    breadcrumbs={[
+      { label: "Beranda", href: "/" },
+      { label: "Usaha", href: "/usaha" },
+      { label: "Registry" },
+    ]}
+    icon="ph:storefront"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="#registry" class="btn btn-primary">
+        Jelajahi registry
+        <Icon name="ph:arrow-down" size={17} />
+      </a>
+      <a href="/tentang#pengembangan" data-login-open class="btn btn-secondary">
+        Ajukan listing
+        <Icon name="ph:lock-key" size={16} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-sand-50 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-honey-800">Contoh registry</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">{providers.length} penyedia</p>
+        </div>
+        <Icon name="ph:magnifying-glass" size={22} class="text-honey-700" />
+      </div>
+      <div class="grid grid-cols-2 divide-x divide-line">
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{usahaCategories.length - 1}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">kategori</p>
+        </div>
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{areas.length}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">wilayah</p>
+        </div>
+      </div>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Nama, tarif, dan status adalah data ilustrasi.
+      </p>
+    </div>
+  </PageHero>
+
+  <!-- Explorer -->
+  <section id="registry" class="section-pad scroll-mt-24">
+    <div class="container-page" data-registry>
+      <SectionHead
+        eyebrow="Cari penyedia"
+        title="Pilih berdasarkan kebutuhan dan wilayah."
+        description="Gunakan pencarian dan filter untuk melihat contoh tampilan registry."
+      >
+        <span slot="action" class="badge badge-sand">Data ilustrasi</span>
+      </SectionHead>
+
+      <div class="mt-8 rounded-2xl border border-line bg-white/70 p-4 sm:p-5">
+        <div class="grid gap-3 lg:grid-cols-[1fr_auto]">
+          <div class="relative">
+            <Icon name="ph:magnifying-glass" size={17} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-soft" />
+            <label for="registry-search" class="sr-only">Cari penyedia usaha</label>
+            <input
+              id="registry-search"
+              type="search"
+              placeholder="Cari nama, layanan, atau wilayah..."
+              autocomplete="off"
+              data-registry-search
+              class="w-full rounded-xl border border-line bg-paper py-3 pl-11 pr-4 text-sm text-ink outline-none transition placeholder:text-muted-soft focus:border-forest-400 focus:ring-2 focus:ring-forest-100"
+            />
+          </div>
+          <div class="flex gap-2">
+            <div>
+              <label for="registry-area" class="sr-only">Filter wilayah</label>
+              <select
+                id="registry-area"
+                data-registry-area
+                class="h-full min-h-[2.9rem] w-full rounded-xl border border-line bg-paper px-4 text-sm font-medium text-ink outline-none transition focus:border-forest-400 focus:ring-2 focus:ring-forest-100 lg:w-48"
+              >
+                <option value="all">Semua wilayah</option>
+                {areas.map((area) => <option value={area}>{area}</option>)}
+              </select>
+            </div>
+            <button type="button" data-registry-reset class="inline-flex min-h-[2.9rem] items-center justify-center gap-1.5 rounded-xl border border-line bg-paper px-4 text-xs font-semibold text-muted transition hover:border-forest-300 hover:text-forest-800">
+              <Icon name="ph:arrow-counter-clockwise" size={14} />
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 flex gap-1.5 overflow-x-auto pb-1" role="group" aria-label="Filter kategori penyedia">
+          {usahaCategories.map((category, index) => (
+            <button
+              type="button"
+              data-registry-category={category.id}
+              aria-pressed={index === 0 ? "true" : "false"}
+              class:list={[
+                "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold transition",
+                index === 0
+                  ? "bg-forest-800 text-white"
+                  : "border border-line bg-paper text-muted hover:border-forest-300 hover:text-forest-800",
+              ]}
+            >
+              <Icon name={categoryIcons[category.id] ?? "ph:tag"} size={14} />
+              {category.label}
+              <span class:list={["rounded-full px-1.5 text-[0.6rem]", index === 0 ? "bg-white/15" : "bg-forest-50 text-forest-700"]}>
+                {categoryCounts[category.id]}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-5 flex items-center justify-between gap-3">
+        <p class="text-xs text-muted-soft" aria-live="polite">
+          Menampilkan <strong class="font-semibold text-ink" data-registry-count>{providers.length}</strong> dari {providers.length} contoh penyedia
+        </p>
+        <span class="text-[0.62rem] text-muted-soft">Status verifikasi bersifat ilustrasi</span>
+      </div>
+
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-registry-grid>
+        {providers.map((provider) => <ProviderCard provider={provider} />)}
+      </div>
+
+      <div class="mt-6 hidden rounded-2xl border border-line bg-paper p-8 text-center" data-registry-empty>
+        <span class="mx-auto inline-flex size-12 items-center justify-center rounded-full bg-forest-50 text-forest-800">
+          <Icon name="ph:magnifying-glass" size={22} />
+        </span>
+        <h2 class="mt-4 font-display text-xl font-semibold text-ink">Belum ada penyedia yang cocok.</h2>
+        <p class="mt-2 text-sm text-muted">Coba kata kunci lain atau hapus filter.</p>
+        <button type="button" data-registry-reset class="btn btn-secondary btn-sm mt-4">Hapus filter</button>
+      </div>
+
+      <p class="fine-print mt-6">
+        PESONA tidak menerbitkan izin atau sertifikat. Registry adalah katalog untuk membantu
+        warga menemukan usaha; verifikasi tidak menjamin kualitas di luar komitmen yang
+        disepakati. Seluruh data pada halaman ini adalah simulasi.
+      </p>
+    </div>
+  </section>
+
+  <!-- Tingkat verifikasi -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Tingkat verifikasi"
+        title="Tiga status, satu standar kejelasan."
+        description="Status menunjukkan kelengkapan dokumen dan komitmen, bukan peringkat kualitas layanan."
+      />
+      <div class="mt-10 grid gap-3 md:grid-cols-3">
+        {
+          levels.map((level) => (
+            <div class="card p-6">
+              <div class="flex items-center justify-between gap-3">
+                <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                  <Icon name={level.icon} size={19} />
+                </span>
+                <span class="font-display text-2xl font-semibold leading-none text-muted-soft">{level.level}</span>
+              </div>
+              <h3 class="mt-4 text-sm font-semibold text-ink">{level.title}</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{level.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Alur -->
+  <section class="section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Cara masuk
+        </p>
+        <h2 class="display-md mt-4">Empat langkah menuju listing.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Proses ini masih merupakan rancangan. Tombol pengajuan belum aktif dan tidak ada data
+          yang dikirim.
+        </p>
+        <a href="/tentang#pengembangan" data-login-open class="btn btn-primary mt-6">
+          Lihat status pengembangan
+          <Icon name="ph:lock-key" size={16} />
+        </a>
+      </div>
+      <ol class="space-y-3">
+        {[
+          ["Profil usaha", "Nama, kategori, wilayah, kontak, dan deskripsi layanan.", "ph:storefront"],
+          ["Dokumen dasar", "NIB, NPWPD, dan dokumen izin sesuai jenis kegiatan.", "ph:folder-open"],
+          ["Komitmen layanan", "Harga publik, kuitansi, dan target respons.", "ph:handshake"],
+          ["Verifikasi & tayang", "Pemeriksaan kelengkapan, lalu listing dapat tampil.", "ph:seal-check"],
+        ].map(([title, text, icon], index) => (
+          <li class="flex gap-4 rounded-2xl border border-line bg-white/65 p-5">
+            <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-forest-50 font-display text-xs font-bold text-forest-800">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <p class="flex items-center gap-2 text-sm font-semibold text-ink"><Icon name={icon} size={16} class="text-forest-700" /> {title}</p>
+              <p class="mt-1.5 text-xs leading-6 text-muted">{text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Punya usaha lokal?"
+    title="Siapkan dari sekarang, ajukan saat fitur dibuka."
+    description="Pelajari dokumen dasar, ikuti pelatihan, dan pahami komitmen layanan. Pengajuan listing akan tersedia bertahap."
+    primaryLabel="Buka pelatihan"
+    primaryHref="/usaha/pelatihan"
+    secondaryLabel="Kembali ke Citta Karya"
+    secondaryHref="/usaha"
+    note="Tidak ada pengajuan nyata pada situs konsep ini."
+  />
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-registry]");
+
+  if (root) {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-provider]"));
+    const search = root.querySelector<HTMLInputElement>("[data-registry-search]");
+    const area = root.querySelector<HTMLSelectElement>("[data-registry-area]");
+    const count = root.querySelector<HTMLElement>("[data-registry-count]");
+    const empty = root.querySelector<HTMLElement>("[data-registry-empty]");
+    const categoryButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-registry-category]"));
+    const resetButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-registry-reset]"));
+
+    let activeCategory = "all";
+
+    const apply = () => {
+      const query = (search?.value ?? "").trim().toLowerCase();
+      const areaValue = area?.value ?? "all";
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const matchesCategory = activeCategory === "all" || card.dataset.category === activeCategory;
+        const matchesArea = areaValue === "all" || card.dataset.area === areaValue;
+        const matchesQuery = !query || (card.dataset.search ?? "").includes(query);
+        const show = matchesCategory && matchesArea && matchesQuery;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      if (count) count.textContent = String(visible);
+      if (empty) empty.classList.toggle("hidden", visible > 0);
+    };
+
+    const setCategory = (category: string) => {
+      activeCategory = category;
+      categoryButtons.forEach((button) => {
+        const active = button.dataset.registryCategory === category;
+        button.setAttribute("aria-pressed", String(active));
+        button.classList.toggle("bg-forest-800", active);
+        button.classList.toggle("text-white", active);
+        button.classList.toggle("border", !active);
+        button.classList.toggle("border-line", !active);
+        button.classList.toggle("bg-paper", !active);
+        button.classList.toggle("text-muted", !active);
+        button.classList.toggle("hover:border-forest-300", !active);
+        button.classList.toggle("hover:text-forest-800", !active);
+        const badge = button.querySelector("span");
+        if (badge) {
+          badge.classList.toggle("bg-white/15", active);
+          badge.classList.toggle("bg-forest-50", !active);
+          badge.classList.toggle("text-forest-700", !active);
+        }
+      });
+      apply();
+    };
+
+    categoryButtons.forEach((button) => {
+      button.addEventListener("click", () => setCategory(button.dataset.registryCategory ?? "all"));
+    });
+
+    search?.addEventListener("input", apply);
+    area?.addEventListener("change", apply);
+
+    resetButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (search) search.value = "";
+        if (area) area.value = "all";
+        setCategory("all");
+      });
+    });
+  }
+</script>

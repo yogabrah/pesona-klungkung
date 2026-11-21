@@ -1,0 +1,304 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaPanel from "../../components/CtaPanel.astro";
+import FaqList from "../../components/FaqList.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import ServiceCard from "../../components/ServiceCard.astro";
+import { SERVICES } from "../../data/services";
+
+const serviceFaqs = [
+  {
+    q: "Apakah layanan di PESONA sudah bisa digunakan sekarang?",
+    a: "Belum. Situs ini adalah tahap konsep. Belum ada autentikasi, pengiriman dokumen, pembayaran, atau koneksi ke sistem pemerintah. Tombol Masuk menampilkan pemberitahuan bahwa fitur masih dalam pengembangan.",
+  },
+  {
+    q: "Apakah PESONA memungut biaya layanan?",
+    a: "Pada konsep ini, layanan pendidikan dan pendampingan digambarkan tanpa biaya. PESONA tidak memungut komisi per izin. Biaya resmi, jika ada, mengikuti ketentuan pemerintah daerah dan kanal resminya.",
+  },
+  {
+    q: "Bagaimana status permohonan dipantau?",
+    a: "Setiap pengajuan dirancang memperoleh kode referensi. Kode yang sama dapat digunakan untuk melihat tahap, riwayat singkat, dan langkah berikutnya melalui halaman cek status.",
+  },
+  {
+    q: "Apakah PESONA bisa mewakili saya di instansi lain?",
+    a: "Tidak. PESONA adalah kanal pendamping dan pemahaman. Pengajuan, keputusan, dan penerbitan dokumen tetap dilakukan oleh instansi berwenang atau melalui kanal resmi yang ditetapkan.",
+  },
+];
+
+const site = Astro.site ?? new URL("https://pesona.example");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Layanan PESONA — Citta Seva",
+  description:
+    "Enam alur layanan PESONA: pendaftaran NPWPD, lapor dan bayar, cek status, lacak izin, janji temu, dan konsultasi.",
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: SERVICES.map((service, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: service.title,
+      url: new URL(`/layanan/${service.slug}`, site).toString(),
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Layanan — Citta Seva"
+  description="Enam alur layanan PESONA untuk warga dan pelaku usaha Klungkung: daftar NPWPD, lapor dan bayar, cek status, lacak izin, janji temu, serta konsultasi."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Citta Seva · Layanan"
+    title="Layanan yang"
+    highlight="menjelaskan dirinya."
+    description="Dari pendaftaran NPWPD sampai konsultasi, setiap langkah punya penjelasan, syarat, dan status yang bisa dipahami. Satu pintu, tanpa perantara."
+    breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Layanan" }]}
+    icon="ph:bank"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="#daftar-layanan" class="btn btn-primary">
+        Lihat enam layanan
+        <Icon name="ph:arrow-down" size={17} />
+      </a>
+      <a href="/layanan/cek-status" class="btn btn-secondary">
+        Cek status
+        <Icon name="ph:magnifying-glass" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-forest-50/70 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-700">Satu pintu</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">6 alur layanan</p>
+        </div>
+        <Icon name="ph:path" size={22} class="text-forest-700" />
+      </div>
+      <div class="divide-y divide-line">
+        {
+          SERVICES.map((service) => (
+            <a
+              href={`/layanan/${service.slug}`}
+              class="flex items-center gap-2.5 px-5 py-3 text-xs font-medium text-muted transition hover:bg-forest-50/70 hover:text-forest-800"
+            >
+              <Icon name={service.icon} size={15} class="shrink-0 text-forest-700" />
+              {service.shortTitle}
+            </a>
+          ))
+        }
+      </div>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Fitur layanan masih dalam pengembangan.
+      </p>
+    </div>
+  </PageHero>
+
+  <!-- Daftar layanan -->
+  <section id="daftar-layanan" class="section-pad scroll-mt-24">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Pilih kebutuhan"
+        title="Mulai dari masalah yang ingin diselesaikan."
+        description="Setiap halaman layanan menjelaskan untuk siapa, langkah yang akan dilalui, dokumen yang perlu disiapkan, dan batas perannya."
+      />
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {SERVICES.map((service, index) => <ServiceCard service={service} index={index + 1} />)}
+      </div>
+      <p class="fine-print mt-6">
+        Semua layanan pada situs ini adalah penjelasan konsep. Tidak ada formulir, unggahan,
+        pembayaran, atau pengiriman data yang aktif.
+      </p>
+    </div>
+  </section>
+
+  <!-- Cara kerja -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Cara layanan bekerja"
+        title="Empat langkah yang sama, untuk semua layanan."
+        description="Struktur yang konsisten membuat warga tidak perlu mempelajari ulang cara memulai di setiap kanal."
+      />
+      <div class="relative mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="pointer-events-none absolute left-[12%] right-[12%] top-9 hidden h-px bg-line-strong/70 xl:block" aria-hidden="true"></div>
+        {
+          [
+            {
+              title: "Kenali kebutuhan",
+              text: "Pilih layanan yang sesuai. Halaman penjelasan membantu memastikan Anda tidak masuk ke alur yang salah.",
+              icon: "ph:compass",
+              step: "01",
+            },
+            {
+              title: "Siapkan data",
+              text: "Daftar periksa menunjukkan dokumen dan angka yang diperlukan sebelum formulir dibuka.",
+              icon: "ph:folder-open",
+              step: "02",
+            },
+            {
+              title: "Ajukan dengan sadar",
+              text: "Ringkasan ditampilkan sebelum dikirim. Anda tahu apa yang disampaikan dan untuk apa.",
+              icon: "ph:paper-plane-tilt",
+              step: "03",
+            },
+            {
+              title: "Pantau dan tindak lanjuti",
+              text: "Kode referensi menunjukkan tahap, catatan, dan langkah berikutnya tanpa perlu bertanya berulang.",
+              icon: "ph:clock-counter-clockwise",
+              step: "04",
+            },
+          ].map((item) => (
+            <div class="relative rounded-2xl border border-line bg-paper p-5">
+              <div class="flex items-center justify-between gap-3">
+                <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                  <Icon name={item.icon} size={19} />
+                </span>
+                <span class="font-display text-xs font-semibold tabular-nums text-muted-soft">{item.step}</span>
+              </div>
+              <h3 class="mt-4 text-sm font-semibold text-ink">{item.title}</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Prinsip -->
+  <section class="section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Prinsip layanan
+        </p>
+        <h2 class="display-md mt-4">Tanpa calo, tanpa jalan pintas.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Layanan publik yang baik tidak membutuhkan perantara tidak resmi. PESONA merancang
+          pengalaman yang transparan dan dapat diawasi.
+        </p>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        {
+          [
+            {
+              title: "Tanpa perantara",
+              text: "Tidak ada biaya per izin atau jalur khusus. Semua langkah mengarah ke kanal resmi.",
+              icon: "ph:shield-check",
+            },
+            {
+              title: "Status tercatat",
+              text: "Setiap pengajuan memiliki jejak yang dapat dibuka oleh pemiliknya.",
+              icon: "ph:clipboard-text",
+            },
+            {
+              title: "Bahasa manusia",
+              text: "Penjelasan ditulis untuk warga, bukan hanya untuk yang terbiasa membaca peraturan.",
+              icon: "ph:chat-circle-text",
+            },
+            {
+              title: "Data secukupnya",
+              text: "Hanya meminta informasi yang diperlukan untuk memproses layanan.",
+              icon: "ph:file-dashed",
+            },
+          ].map((principle) => (
+            <div class="flex gap-3.5 rounded-2xl border border-line bg-white/65 p-5">
+              <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                <Icon name={principle.icon} size={19} />
+              </span>
+              <div>
+                <h3 class="text-sm font-semibold text-ink">{principle.title}</h3>
+                <p class="mt-1.5 text-xs leading-6 text-muted">{principle.text}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SLA -->
+  <section class="border-y border-line bg-sand-50/60 section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Standar layanan
+        </p>
+        <h2 class="display-md mt-4">Waktu yang bisa diharapkan.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Target waktu membantu warga merencanakan langkah. Angka berikut adalah contoh yang
+          digunakan pada konsep, bukan janji layanan resmi.
+        </p>
+        <div class="mt-6 flex items-start gap-2.5 rounded-xl border border-[#D9E3F0] bg-[#F0F6FF] p-4 text-xs leading-6 text-muted">
+          <Icon name="ph:info" size={16} class="mt-0.5 shrink-0 text-honey-700" />
+          Standar sebenarnya mengikuti kebijakan layanan dan beban kerja masing-masing instansi.
+        </div>
+      </div>
+      <div class="overflow-hidden rounded-[1.5rem] border border-line bg-white/85 shadow-soft">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="bg-forest-50 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-forest-800">
+              <th scope="col" class="px-5 py-4">Layanan</th>
+              <th scope="col" class="px-5 py-4">Contoh waktu</th>
+              <th scope="col" class="px-5 py-4 text-right">Biaya</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {[
+              ["Pendaftaran NPWPD", "3 hari kerja", "Rp0"],
+              ["Verifikasi pelaporan", "1 hari kerja", "Rp0"],
+              ["Konsultasi tertulis", "1 hari kerja", "Rp0"],
+              ["Tindak lanjut pengaduan", "3×24 jam", "Rp0"],
+            ].map(([name, time, cost]) => (
+              <tr>
+                <th scope="row" class="px-5 py-4 font-semibold text-ink">{name}</th>
+                <td class="px-5 py-4 text-muted">{time}</td>
+                <td class="px-5 py-4 text-right font-semibold text-forest-800">{cost}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Pertanyaan layanan
+        </p>
+        <h2 class="display-md mt-4">Hal yang perlu dipahami.</h2>
+        <p class="mt-5 text-sm leading-7 text-muted">
+          PESONA membantu memahami dan menyiapkan. Keputusan resmi tetap berada pada instansi
+          berwenang.
+        </p>
+        <a href="/layanan/konsultasi" class="link-arrow mt-6">
+          Buka alur konsultasi
+          <Icon name="ph:arrow-right" size={14} />
+        </a>
+      </div>
+      <FaqList items={serviceFaqs} />
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Belum yakin mulai dari mana?"
+    title="Mulai dari pemahaman, bukan dari formulir."
+    description="Pilih halaman layanan yang paling dekat dengan kebutuhan Anda. Setiap halaman menjelaskan alur sebelum tombol masuk tersedia."
+    primaryLabel="Tanya lewat konsultasi"
+    primaryHref="/layanan/konsultasi"
+    secondaryLabel="Baca pusat edukasi"
+    secondaryHref="/edukasi"
+    note="Fitur masuk dan pengajuan masih dalam pengembangan."
+  />
+</BaseLayout>
+

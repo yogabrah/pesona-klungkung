@@ -1,0 +1,408 @@
+---
+import Icon from "./Icon.astro";
+import { CALCULATORS } from "../data/calculator";
+
+const formatValue = (value: number, field: (typeof CALCULATORS)[number]["fields"][number]) =>
+  new Intl.NumberFormat("id-ID", {
+    maximumFractionDigits: field.prefix === "Rp" ? 0 : 2,
+  }).format(value);
+---
+
+<div data-calculator class="relative">
+  <div class="grid gap-5 lg:grid-cols-[1.14fr_0.86fr] lg:items-start">
+    <div>
+      <div class="card overflow-hidden">
+        <div class="border-b border-line bg-white/60 p-3">
+          <div
+            class="flex flex-wrap gap-1.5"
+            role="tablist"
+            aria-label="Pilih jenis pajak untuk dihitung"
+          >
+            {
+              CALCULATORS.map((calculator, index) => (
+                <button
+                  id={`calc-tab-${calculator.id}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={index === 0 ? "true" : "false"}
+                  aria-controls={`calc-panel-${calculator.id}`}
+                  tabindex={index === 0 ? 0 : -1}
+                  data-calc-tab
+                  data-target={calculator.id}
+                  class:list={[
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2.5 text-xs font-semibold transition",
+                    index === 0
+                      ? "bg-forest-800 text-white shadow-sm"
+                      : "text-muted hover:bg-forest-50 hover:text-forest-900",
+                  ]}
+                >
+                  <Icon name={calculator.icon} size={15} />
+                  {calculator.name}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        {
+          CALCULATORS.map((calculator, index) => (
+            <section
+              id={`calc-panel-${calculator.id}`}
+              role="tabpanel"
+              aria-labelledby={`calc-tab-${calculator.id}`}
+              data-calc-panel={calculator.id}
+              hidden={index !== 0}
+              tabindex="0"
+            >
+              <div class="p-5 sm:p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-5">
+                  <div class="flex items-start gap-3">
+                    <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-forest-50 text-forest-800">
+                      <Icon name={calculator.icon} size={22} />
+                    </span>
+                    <div>
+                      <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-soft">Jenis pajak</p>
+                      <h2 class="mt-1 font-display text-xl font-semibold text-ink">{calculator.name}</h2>
+                      <p class="mt-0.5 text-xs leading-5 text-muted">{calculator.long}</p>
+                    </div>
+                  </div>
+                  <span class="badge badge-forest">{calculator.rateLabel}</span>
+                </div>
+
+                <p class="mt-5 text-sm leading-7 text-muted">{calculator.description}</p>
+
+                <form data-calc-form data-calculator-id={calculator.id} class="mt-6" novalidate>
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    {calculator.fields.map((field) => (
+                      <label class:list={["block", calculator.fields.length === 1 ? "sm:col-span-2" : ""]}>
+                        <span class="text-xs font-semibold text-ink">{field.label}</span>
+                        <span class="mt-2 flex overflow-hidden rounded-xl border border-line bg-paper focus-within:border-forest-400 focus-within:ring-2 focus-within:ring-forest-100">
+                          {field.prefix && (
+                            <span class="inline-flex items-center border-r border-line bg-white/70 px-3 text-xs font-semibold text-muted">
+                              {field.prefix}
+                            </span>
+                          )}
+                          <input
+                            type="text"
+                            inputmode={field.suffix === "%" || field.prefix !== "Rp" ? "decimal" : "numeric"}
+                            autocomplete="off"
+                            id={`calc-${calculator.id}-${field.key}`}
+                            name={field.key}
+                            value={formatValue(field.defaultValue, field)}
+                            data-calc-input
+                            data-key={field.key}
+                            data-format={field.prefix === "Rp" ? "money" : "number"}
+                            class="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold tabular-nums text-ink outline-none"
+                          />
+                          {field.suffix && (
+                            <span class="inline-flex items-center border-l border-line bg-white/70 px-3 text-xs font-semibold text-muted">
+                              {field.suffix}
+                            </span>
+                          )}
+                        </span>
+                        {field.hint && <span class="mt-1.5 block text-[0.65rem] leading-5 text-muted-soft">{field.hint}</span>}
+                      </label>
+                    ))}
+                  </div>
+
+                  <div class="mt-6 flex flex-wrap gap-2.5">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                      Hitung simulasi
+                      <Icon name="ph:calculator" size={15} />
+                    </button>
+                    <button type="button" data-calc-reset class="btn btn-secondary btn-sm">
+                      <Icon name="ph:arrow-counter-clockwise" size={15} />
+                      Reset
+                    </button>
+                  </div>
+                </form>
+
+                <p class="mt-5 flex items-start gap-2 border-t border-line pt-4 text-[0.65rem] leading-5 text-muted-soft">
+                  <Icon name="ph:info" size={14} class="mt-0.5 shrink-0" />
+                  {calculator.note}
+                </p>
+              </div>
+            </section>
+          ))
+        }
+      </div>
+
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-xl border border-line bg-white/60 p-4">
+          <p class="flex items-center gap-1.5 text-[0.68rem] font-semibold text-forest-800">
+            <Icon name="ph:number-circle-one" size={15} />
+            Satu masa
+          </p>
+          <p class="mt-1.5 text-[0.65rem] leading-5 text-muted">Gunakan angka satu masa pajak agar mudah dibandingkan.</p>
+        </div>
+        <div class="rounded-xl border border-line bg-white/60 p-4">
+          <p class="flex items-center gap-1.5 text-[0.68rem] font-semibold text-forest-800">
+            <Icon name="ph:number-circle-two" size={15} />
+            Pisahkan objek
+          </p>
+          <p class="mt-1.5 text-[0.65rem] leading-5 text-muted">Jangan campur nilai objek dengan pendapatan lain.</p>
+        </div>
+        <div class="rounded-xl border border-line bg-white/60 p-4">
+          <p class="flex items-center gap-1.5 text-[0.68rem] font-semibold text-forest-800">
+            <Icon name="ph:number-circle-three" size={15} />
+            Simpan asal angka
+          </p>
+          <p class="mt-1.5 text-[0.65rem] leading-5 text-muted">Petugas dapat meminta rincian saat verifikasi.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="lg:sticky lg:top-28" aria-label="Hasil perhitungan">
+      <div class="card overflow-hidden">
+        <div class="border-b border-line bg-forest-50/70 p-5">
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-[0.62rem] font-bold uppercase tracking-[0.15em] text-forest-700">Hasil simulasi</p>
+            <span class="inline-flex items-center gap-1.5 text-[0.62rem] font-semibold text-forest-700">
+              <span class="size-1.5 rounded-full bg-forest-500" data-calc-status-dot></span>
+              <span data-calc-status>Siap dihitung</span>
+            </span>
+          </div>
+          <p class="mt-4 text-xs font-medium text-muted" data-calc-label>Perkiraan pajak</p>
+          <p class="mt-1 font-display text-[2.55rem] font-semibold leading-none tracking-[-0.04em] text-forest-900" data-calc-value aria-live="polite">
+            Rp0
+          </p>
+          <p class="mt-2 text-xs leading-6 text-muted" data-calc-caption>
+            Masukkan nilai untuk melihat perkiraan.
+          </p>
+        </div>
+
+        <div class="p-5">
+          <div class="space-y-2.5" data-calc-breakdown></div>
+
+          <div class="mt-5 rounded-xl bg-[#F0F6FF] p-3.5">
+            <p class="flex items-start gap-2 text-[0.65rem] leading-5 text-muted">
+              <Icon name="ph:warning-circle" size={14} class="mt-0.5 shrink-0 text-honey-600" />
+              Hasil ini simulasi edukasi, bukan ketetapan pajak. Nilai resmi mengikuti kanal dan dokumen berwenang.
+            </p>
+          </div>
+
+          <div class="mt-5 grid gap-2">
+            <a href="/layanan/konsultasi" class="btn btn-primary btn-sm w-full">
+              Konsultasikan hasil
+              <Icon name="ph:arrow-right" size={15} />
+            </a>
+            <button type="button" data-calc-copy class="btn btn-secondary btn-sm w-full">
+              <Icon name="ph:copy" size={15} />
+              Salin ringkasan
+            </button>
+          </div>
+          <p class="mt-3 text-center text-[0.62rem] leading-5 text-muted-soft">
+            Simulasi berjalan di browser Anda. Tidak ada data yang dikirim ke server.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 grid gap-2">
+        <a href="/pajak" class="flex items-center justify-between gap-3 rounded-xl border border-line bg-white/60 px-4 py-3 text-xs font-semibold text-forest-800 transition hover:border-forest-300">
+          <span class="inline-flex items-center gap-2"><Icon name="ph:bank" size={16} /> Pelajari jenis pajak</span>
+          <Icon name="ph:arrow-right" size={14} />
+        </a>
+        <a href="/edukasi" class="flex items-center justify-between gap-3 rounded-xl border border-line bg-white/60 px-4 py-3 text-xs font-semibold text-forest-800 transition hover:border-forest-300">
+          <span class="inline-flex items-center gap-2"><Icon name="ph:book-open-text" size={16} /> Baca panduan dasar</span>
+          <Icon name="ph:arrow-right" size={14} />
+        </a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  import { CALCULATORS, formatIDR } from "../data/calculator";
+
+  type CalculatorConfig = (typeof CALCULATORS)[number];
+
+  const root = document.querySelector<HTMLElement>("[data-calculator]");
+
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-calc-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-calc-panel]"));
+    const resultLabel = root.querySelector<HTMLElement>("[data-calc-label]");
+    const resultValue = root.querySelector<HTMLElement>("[data-calc-value]");
+    const resultCaption = root.querySelector<HTMLElement>("[data-calc-caption]");
+    const resultBreakdown = root.querySelector<HTMLElement>("[data-calc-breakdown]");
+    const resultStatus = root.querySelector<HTMLElement>("[data-calc-status]");
+    const statusDot = root.querySelector<HTMLElement>("[data-calc-status-dot]");
+    const copyButton = root.querySelector<HTMLButtonElement>("[data-calc-copy]");
+
+    let activeId = CALCULATORS[0].id;
+    let lastSummary = "";
+
+    const findCalculator = (id: string) => CALCULATORS.find((calculator) => calculator.id === id) ?? CALCULATORS[0];
+    const findPanel = (id: string) => panels.find((panel) => panel.dataset.calcPanel === id);
+
+    const parseValue = (input: HTMLInputElement) => {
+      const cleaned = input.value.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+      const parsed = Number(cleaned);
+      return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+    };
+
+    const formatFieldValue = (value: number, key: string, calculator: CalculatorConfig) => {
+      const field = calculator.fields.find((item) => item.key === key);
+      return new Intl.NumberFormat("id-ID", {
+        maximumFractionDigits: field?.prefix === "Rp" ? 0 : 2,
+      }).format(value);
+    };
+
+    const readValues = (calculator: CalculatorConfig, panel: HTMLElement) => {
+      const values: Record<string, number> = {};
+      panel.querySelectorAll<HTMLInputElement>("[data-calc-input]").forEach((input) => {
+        values[input.dataset.key ?? ""] = parseValue(input);
+      });
+      calculator.fields.forEach((field) => {
+        if (values[field.key] === undefined) values[field.key] = field.defaultValue;
+      });
+      return values;
+    };
+
+    const compute = (calculator: CalculatorConfig, panel: HTMLElement) => {
+      const result = calculator.compute(readValues(calculator, panel));
+      if (resultLabel) resultLabel.textContent = result.resultLabel;
+      if (resultValue) resultValue.textContent = formatIDR(result.value);
+      if (resultCaption) resultCaption.textContent = result.caption;
+      if (resultStatus) resultStatus.textContent = "Terhitung";
+      statusDot?.classList.remove("bg-forest-500");
+      statusDot?.classList.add("bg-forest-600");
+
+      if (resultBreakdown) {
+        resultBreakdown.replaceChildren(
+          ...result.breakdown.map((row) => {
+            const element = document.createElement("div");
+            element.className = "flex items-start justify-between gap-4 border-b border-line/70 pb-2.5 last:border-0 last:pb-0";
+            const label = document.createElement("span");
+            label.className = "text-[0.68rem] leading-5 text-muted";
+            label.textContent = row.label;
+            const value = document.createElement("span");
+            value.className = "text-right text-[0.7rem] font-semibold tabular-nums leading-5 text-ink";
+            value.textContent = row.value;
+            element.append(label, value);
+            return element;
+          }),
+        );
+      }
+
+      lastSummary = [
+        `Simulasi ${calculator.name} — PESONA`,
+        result.resultLabel + ": " + formatIDR(result.value),
+        result.caption,
+        ...result.breakdown.map((row) => `${row.label}: ${row.value}`),
+        "Hasil simulasi edukasi, bukan ketetapan pajak. Sumber: PESONA (konsep).",
+      ].join("\n");
+
+      return result;
+    };
+
+    const selectTab = (id: string, focusTab = false) => {
+      const calculator = findCalculator(id);
+      activeId = calculator.id;
+
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.target === calculator.id;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        tab.classList.toggle("bg-forest-800", selected);
+        tab.classList.toggle("text-white", selected);
+        tab.classList.toggle("shadow-sm", selected);
+        tab.classList.toggle("text-muted", !selected);
+        tab.classList.toggle("hover:bg-forest-50", !selected);
+        tab.classList.toggle("hover:text-forest-900", !selected);
+        if (selected && focusTab) tab.focus();
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.calcPanel !== calculator.id;
+      });
+
+      const panel = findPanel(calculator.id);
+      if (panel) compute(calculator, panel);
+      window.history.replaceState(null, "", `#${calculator.id}`);
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectTab(tab.dataset.target ?? CALCULATORS[0].id));
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let nextIndex = index;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
+        if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = tabs.length - 1;
+        const nextTab = tabs[nextIndex];
+        selectTab(nextTab.dataset.target ?? CALCULATORS[0].id, true);
+      });
+    });
+
+    panels.forEach((panel) => {
+      const calculator = findCalculator(panel.dataset.calcPanel ?? "");
+      const form = panel.querySelector<HTMLFormElement>("[data-calc-form]");
+      const reset = panel.querySelector<HTMLButtonElement>("[data-calc-reset]");
+
+      panel.querySelectorAll<HTMLInputElement>("[data-calc-input]").forEach((input) => {
+        input.addEventListener("input", () => {
+          if (activeId === calculator.id) compute(calculator, panel);
+        });
+        input.addEventListener("blur", () => {
+          input.value = formatFieldValue(parseValue(input), input.dataset.key ?? "", calculator);
+          if (activeId === calculator.id) compute(calculator, panel);
+        });
+        input.addEventListener("focus", () => input.select());
+      });
+
+      form?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        selectTab(calculator.id);
+        compute(calculator, panel);
+      });
+
+      reset?.addEventListener("click", () => {
+        panel.querySelectorAll<HTMLInputElement>("[data-calc-input]").forEach((input) => {
+          const field = calculator.fields.find((item) => item.key === input.dataset.key);
+          if (!field) return;
+          input.value = formatFieldValue(field.defaultValue, field.key, calculator);
+        });
+        compute(calculator, panel);
+      });
+    });
+
+    copyButton?.addEventListener("click", async () => {
+      if (!lastSummary) return;
+      const original = copyButton.innerHTML;
+      try {
+        await navigator.clipboard.writeText(lastSummary);
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = lastSummary;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        (document as unknown as { execCommand: (command: string) => boolean }).execCommand("copy");
+        area.remove();
+      }
+      copyButton.textContent = "Ringkasan tersalin";
+      window.setTimeout(() => {
+        copyButton.innerHTML = original;
+      }, 2200);
+    });
+
+    const hash = decodeURIComponent(window.location.hash.replace("#", ""));
+    const initial = CALCULATORS.some((calculator) => calculator.id === hash) ? hash : CALCULATORS[0].id;
+    selectTab(initial);
+
+    if (hash && CALCULATORS.some((calculator) => calculator.id === hash)) {
+      window.setTimeout(() => root.scrollIntoView({ behavior: "smooth", block: "start" }), 180);
+    }
+
+    window.addEventListener("hashchange", () => {
+      const nextHash = decodeURIComponent(window.location.hash.replace("#", ""));
+      if (!CALCULATORS.some((calculator) => calculator.id === nextHash)) return;
+      selectTab(nextHash);
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+</script>

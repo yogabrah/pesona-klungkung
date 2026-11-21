@@ -1,0 +1,54 @@
+---
+import { Image } from "astro:assets";
+import lambangKlungkung from "../assets/images/lambang-klungkung.png";
+
+interface Props {
+  variant?: "dark" | "light";
+  compact?: boolean;
+  class?: string;
+}
+
+const { variant = "dark", compact = false, class: className = "" } = Astro.props;
+const isLight = variant === "light";
+---
+
+<span class:list={["inline-flex items-center gap-3", className]}>
+  <span
+    class:list={[
+      "relative inline-flex size-12 shrink-0 items-center justify-center rounded-[0.9rem] bg-white p-1 shadow-[0_10px_30px_-16px_rgba(7,30,58,0.8)] ring-1",
+      isLight ? "ring-white/30" : "ring-line/80",
+    ]}
+    aria-hidden="true"
+  >
+    <Image
+      src={lambangKlungkung}
+      alt=""
+      width={96}
+      height={90}
+      format="webp"
+      quality={90}
+      class="h-full w-auto object-contain"
+      loading="eager"
+    />
+  </span>
+  <span class="flex flex-col leading-none">
+    <span
+      class:list={[
+        "font-display text-[1.28rem] font-bold tracking-[-0.035em]",
+        isLight ? "text-white" : "text-forest-950",
+      ]}>PESONA</span
+    >
+    {
+      !compact && (
+        <span
+          class:list={[
+            "mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.12em] max-xl:hidden",
+            isLight ? "text-forest-100/80" : "text-muted",
+          ]}
+        >
+          Pusat Edukasi &amp; Optimalisasi Usaha
+        </span>
+      )
+    }
+  </span>
+</span>

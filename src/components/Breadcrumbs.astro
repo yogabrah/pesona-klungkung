@@ -1,0 +1,49 @@
+---
+import Icon from "./Icon.astro";
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+  schema?: boolean;
+  class?: string;
+}
+
+const { items, schema = true, class: className = "" } = Astro.props;
+const site = Astro.site ?? new URL("https://pesona.example");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.label,
+    ...(item.href ? { item: new URL(item.href, site).toString() } : {}),
+  })),
+};
+---
+
+<nav class:list={["flex items-center gap-1.5 text-[0.72rem] font-medium text-muted-soft", className]} aria-label="Breadcrumb">
+  {
+    items.map((item, index) => (
+      <>
+        {index > 0 && <Icon name="ph:caret-right" size={12} class="shrink-0 text-line-strong" />}
+        {item.href ? (
+          <a href={item.href} class="transition hover:text-forest-800">
+            {item.label}
+          </a>
+        ) : (
+          <span class="text-forest-800" aria-current="page">
+            {item.label}
+          </span>
+        )}
+      </>
+    ))
+  }
+</nav>
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

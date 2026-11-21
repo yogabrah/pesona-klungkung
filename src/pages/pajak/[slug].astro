@@ -1,0 +1,232 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FaqList from "../../components/FaqList.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import { taxList } from "../../lib/content";
+
+export function getStaticPaths() {
+  return taxList.map((tax) => ({
+    params: { slug: tax.slug },
+    props: { tax },
+  }));
+}
+
+const { tax } = Astro.props;
+const related = taxList.filter((item) => item.slug !== tax.slug).slice(0, 3);
+
+const faqs = [
+  {
+    q: `Apakah tarif ${tax.name} selalu ${tax.rate}?`,
+    a: `${tax.rateNote} Ketentuan resmi dapat berbeda menurut jenis objek, lokasi, nilai, dan peraturan yang berlaku. Selalu cocokkan dengan dokumen atau kanal resmi.`,
+  },
+  {
+    q: `Kapan ${tax.name} perlu dilaporkan atau dibayar?`,
+    a: `Masa pajak pada halaman ini adalah ilustrasi: ${tax.period.toLowerCase()}. Jatuh tempo contoh: ${tax.due.toLowerCase()}. Tanggal resmi mengikuti SPPT, kode billing, atau pengumuman instansi berwenang.`,
+  },
+  {
+    q: "Apakah PESONA memungut atau menetapkan pajak?",
+    a: "Tidak. PESONA adalah kanal edukasi dan pendampingan. Penetapan dan pemungutan pajak tetap menjadi kewenangan pemerintah daerah melalui kanal resmi.",
+  },
+];
+---
+
+<BaseLayout
+  title={`${tax.name} — ${tax.long}`}
+  description={`${tax.summary} Pelajari objek, subjek, tarif, contoh perhitungan, dan dokumen ${tax.name} di Kabupaten Klungkung.`}
+>
+  <PageHero
+    eyebrow={`Pajak daerah · ${tax.period}`}
+    title={`${tax.name} —`}
+    highlight={tax.long}
+    description={tax.summary}
+    breadcrumbs={[
+      { label: "Beranda", href: "/" },
+      { label: "Pajak", href: "/pajak" },
+      { label: tax.name },
+    ]}
+    icon={tax.iconName}
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href={`/kalkulator#${tax.slug}`} class="btn btn-primary">
+        Hitung simulasi
+        <Icon name="ph:calculator" size={17} />
+      </a>
+      <a href="/layanan/konsultasi" class="btn btn-secondary">
+        Tanya petugas
+        <Icon name="ph:chat-circle-text" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="bg-forest-900 px-5 py-5 text-white">
+        <p class="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-forest-200/75">Tarif ilustrasi</p>
+        <p class="mt-1 font-display text-[2.35rem] font-semibold leading-none text-honey-200">{tax.rate}</p>
+        <p class="mt-2 text-[0.68rem] leading-5 text-forest-100/65">{tax.rateNote}</p>
+      </div>
+      <dl class="divide-y divide-line text-xs">
+        <div class="flex items-center justify-between gap-3 px-5 py-3">
+          <dt class="text-muted-soft">Masa pajak</dt>
+          <dd class="text-right font-semibold text-ink">{tax.period}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-3 px-5 py-3">
+          <dt class="text-muted-soft">Jatuh tempo</dt>
+          <dd class="max-w-[9rem] text-right font-semibold text-ink">{tax.due}</dd>
+        </div>
+        <div class="flex items-start justify-between gap-3 px-5 py-3">
+          <dt class="text-muted-soft">Subjek</dt>
+          <dd class="max-w-[10rem] text-right font-medium leading-5 text-ink">{tax.subject}</dd>
+        </div>
+      </dl>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Angka dan istilah disederhanakan untuk edukasi.
+      </p>
+    </div>
+  </PageHero>
+
+  <section class="section-pad">
+    <div class="container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+      <article class="min-w-0">
+        <div class="prose-pesona max-w-[48rem]">
+          <h2 id="ringkasan" class="mt-0">Apa yang diatur?</h2>
+          <p>{tax.summary}</p>
+
+          <div id="objek" class="my-8 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-2xl border border-line bg-white/70 p-5">
+              <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                <Icon name="ph:crosshair" size={19} />
+              </span>
+              <h3 class="mt-4 text-sm font-semibold text-ink">Objek</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{tax.object}</p>
+            </div>
+            <div class="rounded-2xl border border-line bg-white/70 p-5">
+              <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                <Icon name="ph:user-circle" size={19} />
+              </span>
+              <h3 class="mt-4 text-sm font-semibold text-ink">Subjek</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{tax.subject}</p>
+            </div>
+          </div>
+
+          <h2>Cakupan umum</h2>
+          <div class="not-prose flex flex-wrap gap-2">
+            {tax.subtypes.map((subtype) => (
+              <span class="chip">
+                <Icon name="ph:check" size={13} class="text-forest-700" />
+                {subtype}
+              </span>
+            ))}
+          </div>
+
+          <h2 id="cara-menghitung">Cara menghitung</h2>
+          <p>
+            Perhitungan tepat memerlukan dasar pengenaan yang sesuai. Contoh berikut hanya
+            memperlihatkan pola umum, bukan nilai yang berlaku untuk objek tertentu.
+          </p>
+        </div>
+
+        <div class="my-8 overflow-hidden rounded-[1.4rem] border border-forest-200 bg-forest-50">
+          <div class="border-b border-forest-200/80 px-5 py-4 sm:px-6">
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-700">Contoh ilustrasi</p>
+              <span class="badge bg-white text-forest-700">{tax.rate}</span>
+            </div>
+          </div>
+          <div class="px-5 py-6 sm:px-6">
+            <p class="text-sm font-medium leading-7 text-muted">{tax.example.label}</p>
+            <p class="mt-2 font-display text-[2rem] font-semibold tracking-[-0.03em] text-forest-900">{tax.example.result}</p>
+            <p class="mt-3 text-xs leading-6 text-muted-soft">{tax.example.note}</p>
+            <a href={`/kalkulator#${tax.slug}`} class="link-arrow mt-5">
+              Coba dengan angka Anda
+              <Icon name="ph:arrow-right" size={14} />
+            </a>
+          </div>
+        </div>
+
+        <div class="prose-pesona max-w-[48rem]">
+          <h2 id="dokumen">Dokumen dan kanal</h2>
+        </div>
+        <div class="my-6 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-2xl border border-line bg-white/70 p-5">
+            <h3 class="flex items-center gap-2 text-sm font-semibold text-ink">
+              <Icon name="ph:folder-simple" size={17} class="text-forest-700" />
+              Dokumen yang umum disiapkan
+            </h3>
+            <ul class="mt-3 space-y-2 text-xs leading-6 text-muted">
+              {tax.docs.map((doc) => (
+                <li class="flex gap-2"><Icon name="ph:check" size={13} class="mt-1 shrink-0 text-forest-600" /> {doc}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-line bg-white/70 p-5">
+            <h3 class="flex items-center gap-2 text-sm font-semibold text-ink">
+              <Icon name="ph:wallet" size={17} class="text-forest-700" />
+              Kanal pembayaran contoh
+            </h3>
+            <ul class="mt-3 space-y-2 text-xs leading-6 text-muted">
+              {tax.channels.map((channel) => (
+                <li class="flex gap-2"><Icon name="ph:circle" size={9} class="mt-2 shrink-0 text-honey-500" /> {channel}</li>
+              ))}
+            </ul>
+            <p class="mt-3 text-[0.62rem] leading-5 text-muted-soft">Kanal resmi dapat berubah. Gunakan kanal yang diumumkan pemerintah daerah.</p>
+          </div>
+        </div>
+
+        <div class="prose-pesona max-w-[48rem]">
+          <h2>Hal yang perlu diingat</h2>
+          <ul>
+            {tax.points.map((point) => <li>{point}</li>)}
+          </ul>
+          <div id="dasar-hukum" class="callout">
+            <p class="flex items-start gap-2.5 text-sm leading-7 text-forest-900">
+              <Icon name="ph:scales" size={19} class="mt-1 shrink-0 text-forest-700" />
+              <span><strong>Dasar hukum.</strong> {tax.legal}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-10">
+          <FaqList items={faqs} />
+        </div>
+      </article>
+
+      <aside class="space-y-4 lg:sticky lg:top-28">
+        <div class="card p-5">
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.15em] text-muted-soft">Di halaman ini</p>
+          <nav class="mt-3 grid gap-2 text-xs" aria-label="Daftar bagian">
+            <a href="#ringkasan" class="text-muted hover:text-forest-800">Apa yang diatur</a>
+            <a href="#objek" class="text-muted hover:text-forest-800">Objek dan subjek</a>
+            <a href="#cara-menghitung" class="text-muted hover:text-forest-800">Cara menghitung</a>
+            <a href="#dokumen" class="text-muted hover:text-forest-800">Dokumen dan kanal</a>
+            <a href="#dasar-hukum" class="text-muted hover:text-forest-800">Dasar hukum</a>
+          </nav>
+        </div>
+
+        <div class="rounded-[1.4rem] border border-forest-200 bg-forest-50 p-5">
+          <span class="inline-flex size-9 items-center justify-center rounded-full bg-white text-forest-800">
+            <Icon name="ph:calculator" size={18} />
+          </span>
+          <h2 class="mt-3 font-display text-lg font-semibold text-forest-950">Simulasi cepat</h2>
+          <p class="mt-2 text-xs leading-6 text-muted">{tax.example.label}</p>
+          <p class="mt-2 font-display text-xl font-semibold text-forest-800">{tax.example.result}</p>
+          <a href={`/kalkulator#${tax.slug}`} class="link-arrow mt-4">
+            Buka kalkulator
+            <Icon name="ph:arrow-right" size={14} />
+          </a>
+        </div>
+
+        <div class="card p-5">
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.15em] text-muted-soft">Pajak lain</p>
+          <div class="mt-4 grid gap-2">
+            {related.map((item) => (
+              <a href={`/pajak/${item.slug}`} class="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-xs font-medium text-muted hover:bg-forest-50 hover:text-forest-800">
+                <span>{item.name}</span>
+                <span class="text-[0.62rem] font-semibold text-forest-700">{item.rate}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

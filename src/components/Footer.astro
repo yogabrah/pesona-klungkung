@@ -1,0 +1,112 @@
+---
+import { SITE } from "../data/site";
+import { SERVICES } from "../data/services";
+import Icon from "./Icon.astro";
+import Logo from "./Logo.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="relative overflow-hidden bg-forest-950 text-forest-100">
+  <div class="pointer-events-none absolute inset-0 opacity-[0.16] dot-grid-light" aria-hidden="true"></div>
+  <div class="container-page relative py-16 lg:py-20">
+    <div class="grid gap-12 lg:grid-cols-[1.35fr_0.7fr_0.8fr_0.9fr]">
+      <div class="max-w-sm">
+        <a href="/" aria-label="PESONA Kabupaten Klungkung — beranda">
+          <Logo variant="light" />
+        </a>
+        <p class="mt-6 text-sm leading-7 text-forest-100/70">
+          Konsep satu kanal untuk belajar pajak, mengurus administrasi, dan menumbuhkan usaha di
+          Kabupaten Klungkung. Dijelaskan dengan bahasa yang manusiawi dan alur yang transparan.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="badge-dark">Konsep platform</span>
+          <span class="badge-dark">Data ilustrasi</span>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.16em] text-forest-200/70">
+          Jelajahi
+        </h2>
+        <ul class="mt-5 space-y-3 text-sm">
+          <li><a class="text-forest-100/75 transition hover:text-white" href="/tentang">Tentang PESONA</a></li>
+          <li><a class="text-forest-100/75 transition hover:text-white" href="/edukasi">Pusat edukasi</a></li>
+          <li><a class="text-forest-100/75 transition hover:text-white" href="/pajak">Jenis pajak daerah</a></li>
+          <li><a class="text-forest-100/75 transition hover:text-white" href="/kalkulator">Kalkulator simulasi</a></li>
+          <li><a class="text-forest-100/75 transition hover:text-white" href="/usaha">Citta Karya</a></li>
+          <li><a class="text-forest-100/75 transition hover:text-white" href="/dashboard">Contoh dashboard</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.16em] text-forest-200/70">
+          Layanan
+        </h2>
+        <ul class="mt-5 space-y-3 text-sm">
+          {
+            SERVICES.map((service) => (
+              <li>
+                <a
+                  class="text-forest-100/75 transition hover:text-white"
+                  href={`/layanan/${service.slug}`}
+                >
+                  {service.shortTitle}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.16em] text-forest-200/70">
+          Kontak konsep
+        </h2>
+        <ul class="mt-5 space-y-4 text-sm text-forest-100/75">
+          <li class="flex gap-2.5">
+            <Icon name="ph:map-pin" size={17} class="mt-0.5 shrink-0 text-honey-300" />
+            <span>MPP Klungkung, Bali<br /><span class="text-xs text-forest-200/75">lokasi ilustrasi</span></span>
+          </li>
+          <li class="flex gap-2.5">
+            <Icon name="ph:envelope-simple" size={17} class="mt-0.5 shrink-0 text-honey-300" />
+            <a class="transition hover:text-white" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          </li>
+          <li class="flex gap-2.5">
+            <Icon name="ph:clock" size={17} class="mt-0.5 shrink-0 text-honey-300" />
+            <span>{SITE.hours}</span>
+          </li>
+        </ul>
+        <a
+          href="/tentang#pengembangan"
+          data-login-open
+          class="mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-xs font-semibold text-white transition hover:border-white/30 hover:bg-white/10"
+        >
+          Masuk ke PESONA
+          <Icon name="ph:arrow-up-right" size={15} />
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-14 border-t border-white/10 pt-7">
+      <p class="text-xs leading-6 text-forest-100/70">
+        © {year} PESONA · Konsep platform TRI CITTA MAHOTTAMA untuk Kabupaten Klungkung. Situs ini
+        bukan situs resmi Pemerintah Kabupaten Klungkung. Seluruh angka, nama, status, dan jadwal
+        adalah simulasi. Izin, sertifikasi, dan pemungutan pajak tetap menjadi kewenangan instansi
+        berwenang.
+      </p>
+      <div class="mt-5 flex flex-col gap-3 text-[0.68rem] text-forest-200/65 sm:flex-row sm:items-center sm:justify-between">
+        <p>Dibangun sebagai situs statis dengan Astro, Tailwind CSS, dan Phosphor Icons.</p>
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <a class="transition hover:text-forest-100" href="/tentang#batas">Batas &amp; peran</a>
+          <span aria-hidden="true">·</span>
+          <a class="transition hover:text-forest-100" href="/tentang#pengembangan">Status pengembangan</a>
+          <span aria-hidden="true">·</span>
+          <a class="transition hover:text-forest-100" href="/layanan/konsultasi">Kanal konsultasi</a>
+          <span aria-hidden="true">·</span>
+          <a class="transition hover:text-forest-100" href="/peta-situs">Peta situs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

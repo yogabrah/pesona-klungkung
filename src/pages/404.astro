@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<BaseLayout
+  title="Halaman tidak ditemukan"
+  description="Halaman yang Anda cari tidak tersedia di situs konsep PESONA."
+  noindex
+>
+  <section class="surface-hero relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 opacity-20 dot-grid" aria-hidden="true"></div>
+    <div class="container-page relative flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
+      <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-forest-100 text-forest-800">
+        <Icon name="ph:map-pin-line" size={30} />
+      </span>
+      <p class="mt-6 font-display text-[4rem] font-semibold leading-none tracking-[-0.06em] text-forest-200">404</p>
+      <h1 class="display-md mt-4">Halaman ini belum ada di peta.</h1>
+      <p class="lead mt-4 max-w-lg">
+        Tautan mungkin berubah atau halaman masih dalam pengembangan. Kembali ke beranda atau
+        jelajahi layanan yang sudah dijelaskan.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="/" class="btn btn-primary">
+          Kembali ke beranda
+          <Icon name="ph:house" size={17} />
+        </a>
+        <a href="/layanan" class="btn btn-secondary">
+          Jelajahi layanan
+          <Icon name="ph:arrow-right" size={17} />
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

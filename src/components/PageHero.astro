@@ -1,0 +1,52 @@
+---
+import Breadcrumbs from "./Breadcrumbs.astro";
+import Icon from "./Icon.astro";
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  highlight?: string;
+  description: string;
+  breadcrumbs: Crumb[];
+  icon?: string;
+  class?: string;
+}
+
+const { eyebrow, title, highlight, description, breadcrumbs, icon, class: className = "" } = Astro.props;
+---
+
+<section class:list={["surface-hero relative overflow-hidden border-b border-line/70", className]}>
+  <div class="pointer-events-none absolute inset-0 opacity-[0.22] dot-grid" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute -right-24 top-0 size-[26rem] rounded-full bg-forest-200/30 blur-3xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="container-page relative pb-12 pt-7 sm:pb-16 lg:pb-20 lg:pt-9">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start lg:gap-14">
+      <div>
+        <p class="eyebrow">
+          {icon && <Icon name={icon} size={15} class="text-honey-600" />}
+          {eyebrow}
+        </p>
+        <h1 class="display-lg mt-4 max-w-4xl">
+          {title}
+          {highlight && <> <span class="text-forest-700">{highlight}</span></>}
+        </h1>
+        <p class="lead mt-6 max-w-2xl">{description}</p>
+        <slot name="actions" />
+      </div>
+
+      <div class="lg:pb-1">
+        <slot name="aside" />
+      </div>
+    </div>
+  </div>
+</section>

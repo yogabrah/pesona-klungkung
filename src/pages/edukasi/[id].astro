@@ -1,0 +1,261 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleArt from "../../components/ArticleArt.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FaqList from "../../components/FaqList.astro";
+import Icon from "../../components/Icon.astro";
+import { articles, getLearningPath, moduleLabel } from "../../lib/content";
+
+export function getStaticPaths() {
+  return articles.map((article) => ({
+    params: { id: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const articleIndex = articles.findIndex((item) => item.id === article.id);
+const previousArticle = articleIndex > 0 ? articles[articleIndex - 1] : null;
+const nextArticle = articleIndex < articles.length - 1 ? articles[articleIndex + 1] : null;
+const related = articles
+  .filter((item) => item.id !== article.id && (item.category === article.category || item.module === article.module))
+  .slice(0, 3);
+const path = getLearningPath(article.module);
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://pesona.example").toString();
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["Article", "LearningResource"],
+  headline: article.title,
+  description: article.excerpt,
+  articleSection: article.category,
+  learningResourceType: "Artikel",
+  educationalLevel: article.level,
+  timeRequired: `PT${article.minutes}M`,
+  inLanguage: "id-ID",
+  isAccessibleForFree: true,
+  mainEntityOfPage: canonical,
+  author: { "@type": "Organization", name: "PESONA" },
+  publisher: {
+    "@type": "Organization",
+    name: "PESONA",
+    logo: {
+      "@type": "ImageObject",
+      url: new URL("/logo-klungkung.png", Astro.site ?? "https://pesona.example").toString(),
+    },
+  },
+};
+
+const articleFaqs = [
+  {
+    q: "Apakah artikel ini bisa dijadikan dasar resmi?",
+    a: "Tidak. Artikel ini adalah materi edukasi umum. Ketentuan resmi mengikuti Perda, peraturan pelaksanaan, dokumen pajak, dan pengumuman dari kanal pemerintah daerah.",
+  },
+  {
+    q: "Apakah angka pada contoh sudah final?",
+    a: "Belum. Angka disederhanakan untuk ilustrasi. Tarif, dasar pengenaan, dan nilai objek resmi dapat berbeda menurut ketentuan yang berlaku.",
+  },
+];
+---
+
+<BaseLayout
+  title={article.title}
+  description={article.excerpt}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <section class="surface-hero relative overflow-hidden border-b border-line/70">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.18] dot-grid" aria-hidden="true"></div>
+    <div class="container-page relative pb-12 pt-7 sm:pb-16 lg:pb-20">
+      <Breadcrumbs
+        items={[
+          { label: "Beranda", href: "/" },
+          { label: "Edukasi", href: "/edukasi" },
+          { label: article.title },
+        ]}
+      />
+
+      <div class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-end">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="badge badge-forest">{article.category}</span>
+            <span class="badge bg-white text-muted">{article.level}</span>
+            <span class="text-[0.7rem] text-muted-soft">{article.minutes} menit baca</span>
+          </div>
+          <h1 class="display-lg mt-5 max-w-4xl">{article.title}</h1>
+          <p class="lead mt-5 max-w-3xl">{article.excerpt}</p>
+          <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.7rem] text-muted-soft">
+            <span class="inline-flex items-center gap-1.5">
+              <Icon name="ph:path" size={14} class="text-forest-700" />
+              {moduleLabel[article.module] ?? path.title}
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <Icon name="ph:clock" size={14} class="text-forest-700" />
+              {article.minutes} menit
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <Icon name="ph:book-open-text" size={14} class="text-forest-700" />
+              Citta Vidya
+            </span>
+          </div>
+        </div>
+        <ArticleArt category={article.category} large />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+      <article class="min-w-0">
+        <div class="prose-pesona max-w-[48rem]">
+          {
+            article.body.map((node) => {
+              if (node.t === "p") return <p>{String(node.x)}</p>;
+              if (node.t === "h") return <h2>{String(node.x)}</h2>;
+              if (node.t === "note") {
+                return (
+                  <div class="callout">
+                    <p class="flex items-start gap-2.5 text-sm leading-7 text-forest-900">
+                      <Icon name="ph:info" size={18} class="mt-1 shrink-0 text-forest-700" />
+                      <span>{String(node.x)}</span>
+                    </p>
+                  </div>
+                );
+              }
+              if (node.t === "list") {
+                return (
+                  <ul>
+                    {(node.x as string[]).map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                );
+              }
+              if (node.t === "table") {
+                return (
+                  <div class="my-8 overflow-hidden rounded-2xl border border-line">
+                    <table class="data-table">
+                      <tbody>
+                        {(node.x as string[][]).map((row) => (
+                          <tr>
+                            <td>{row[0]}</td>
+                            <td>{row[1]}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }
+              return null;
+            })
+          }
+        </div>
+
+        <div class="mt-10 rounded-2xl border border-[#D9E3F0] bg-[#F0F6FF] p-5 sm:p-6">
+          <div class="flex items-start gap-3">
+            <Icon name="ph:warning-circle" size={20} class="mt-0.5 shrink-0 text-honey-700" />
+            <div>
+              <p class="text-sm font-semibold text-ink">Materi edukasi, bukan ketetapan pajak.</p>
+              <p class="mt-1.5 text-xs leading-6 text-muted">
+                Gunakan artikel ini untuk memahami konsep. Nilai dan tata cara resmi mengikuti
+                peraturan, SPPT, kode billing, atau petunjuk instansi berwenang.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-10 flex flex-col justify-between gap-3 border-t border-line pt-6 sm:flex-row" aria-label="Navigasi materi">
+          {
+            previousArticle ? (
+              <a href={`/edukasi/${previousArticle.id}`} class="group flex max-w-[16rem] items-start gap-2.5">
+                <Icon name="ph:arrow-left" size={16} class="mt-0.5 shrink-0 text-forest-700" />
+                <span>
+                  <span class="text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-soft">Sebelumnya</span>
+                  <span class="mt-1 block text-sm font-semibold leading-6 text-ink group-hover:text-forest-800">
+                    {previousArticle.title}
+                  </span>
+                </span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            nextArticle ? (
+              <a href={`/edukasi/${nextArticle.id}`} class="group flex max-w-[16rem] items-start justify-end gap-2.5 text-right sm:ml-auto">
+                <span>
+                  <span class="text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-soft">Berikutnya</span>
+                  <span class="mt-1 block text-sm font-semibold leading-6 text-ink group-hover:text-forest-800">
+                    {nextArticle.title}
+                  </span>
+                </span>
+                <Icon name="ph:arrow-right" size={16} class="mt-0.5 shrink-0 text-forest-700" />
+              </a>
+            ) : (
+              <span />
+            )
+          }
+        </nav>
+      </article>
+
+      <aside class="space-y-4 lg:sticky lg:top-28">
+        <div class="card p-5">
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.15em] text-forest-700">Poin utama</p>
+          <ul class="mt-4 space-y-3">
+            {
+              article.takeaways.map((takeaway) => (
+                <li class="flex gap-2.5 text-xs leading-6 text-muted">
+                  <Icon name="ph:check-circle" size={16} class="mt-0.5 shrink-0 text-forest-600" />
+                  <span>{takeaway}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="rounded-[1.4rem] border border-forest-200 bg-forest-50 p-5">
+          <span class="inline-flex size-9 items-center justify-center rounded-full bg-white text-forest-800">
+            <Icon name="ph:chat-circle-text" size={18} />
+          </span>
+          <h2 class="mt-3 font-display text-lg font-semibold text-forest-950">Masih ada yang belum jelas?</h2>
+          <p class="mt-2 text-xs leading-6 text-muted">
+            Pelajari cara menyampaikan pertanyaan melalui kanal konsultasi yang tercatat.
+          </p>
+          <a href="/layanan/konsultasi" class="link-arrow mt-4">
+            Buka alur konsultasi
+            <Icon name="ph:arrow-right" size={14} />
+          </a>
+        </div>
+
+        {
+          related.length > 0 && (
+            <div class="card p-5">
+              <p class="text-[0.62rem] font-bold uppercase tracking-[0.15em] text-muted-soft">Materi terkait</p>
+              <ul class="mt-4 space-y-3">
+                {related.map((item) => (
+                  <li>
+                    <a
+                      href={`/edukasi/${item.id}`}
+                      class="group flex items-start justify-between gap-2 text-xs font-medium leading-6 text-muted hover:text-forest-800"
+                    >
+                      <span>{item.title}</span>
+                      <Icon name="ph:arrow-up-right" size={13} class="mt-1 shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+
+  <section class="border-t border-line bg-white/50 py-14">
+    <div class="container-reading">
+      <h2 class="display-sm">Pertanyaan singkat seputar materi ini.</h2>
+      <FaqList items={articleFaqs} class="mt-6" />
+    </div>
+  </section>
+</BaseLayout>

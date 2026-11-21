@@ -1,0 +1,88 @@
+---
+import type { Provider } from "../lib/content";
+import { formatRupiah } from "../lib/content";
+import Icon from "./Icon.astro";
+
+interface Props {
+  provider: Provider;
+  class?: string;
+}
+
+const { provider, class: className = "" } = Astro.props;
+
+const categoryIcon: Record<string, string> = {
+  homestay: "ph:bed",
+  guide: "ph:compass",
+  dive: "ph:waves",
+  kuliner: "ph:fork-knife",
+  boat: "ph:boat",
+};
+
+const levelLabel: Record<number, string> = {
+  1: "Terverifikasi dasar",
+  2: "Terverifikasi",
+  3: "Terverifikasi lanjutan",
+};
+
+const categoryTone: Record<string, string> = {
+  homestay: "bg-[#EDF5FD] text-forest-800",
+  guide: "bg-[#F5F4FF] text-[#4F47A3]",
+  dive: "bg-[#EAF7F6] text-[#0F766E]",
+  kuliner: "bg-[#F3F6FA] text-[#516479]",
+  boat: "bg-[#E7EDF5] text-[#164C82]",
+};
+---
+
+<article
+  class:list={["reveal group card card-hover flex h-full flex-col overflow-hidden", className]}
+  data-provider
+  data-category={provider.category}
+  data-area={provider.area}
+  data-search={`${provider.name} ${provider.categoryLabel} ${provider.area} ${provider.desc}`.toLowerCase()}
+>
+  <div class:list={["relative overflow-hidden p-5", categoryTone[provider.category] ?? "bg-forest-50 text-forest-800"]}>
+    <div class="absolute inset-0 opacity-20 dot-grid" aria-hidden="true"></div>
+    <div class="relative flex items-start justify-between gap-3">
+      <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-white/80 shadow-sm">
+        <Icon name={categoryIcon[provider.category] ?? "ph:storefront"} size={24} />
+      </span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-white/80 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.08em]">
+        <Icon name="ph:seal-check" size={13} />
+        {levelLabel[provider.level]}
+      </span>
+    </div>
+    <p class="relative mt-7 text-[0.66rem] font-semibold uppercase tracking-[0.14em] opacity-70">
+      {provider.categoryLabel} · {provider.area}
+    </p>
+    <h3 class="relative mt-1 font-display text-[1.25rem] font-semibold leading-tight text-ink">
+      {provider.name}
+    </h3>
+  </div>
+
+  <div class="flex flex-1 flex-col p-5">
+    <p class="line-clamp-2 text-sm leading-7 text-muted">{provider.desc}</p>
+
+    <div class="mt-4 flex flex-wrap gap-1.5">
+      {provider.licenses.map((license) => (
+        <span class="rounded-full border border-line bg-paper px-2 py-1 text-[0.62rem] font-semibold text-muted">
+          {license}
+        </span>
+      ))}
+    </div>
+
+    <div class="mt-auto flex items-end justify-between gap-3 border-t border-line pt-4">
+      <div>
+        <p class="text-[0.62rem] font-medium uppercase tracking-[0.1em] text-muted-soft">Contoh tarif</p>
+        <p class="mt-1 font-display text-[1.05rem] font-semibold text-ink">
+          {formatRupiah(provider.price)}
+          <span class="font-sans text-[0.65rem] font-medium text-muted-soft">/ {provider.unit}</span>
+        </p>
+      </div>
+      <span class="inline-flex items-center gap-1 text-xs font-semibold text-forest-700">
+        <Icon name="ph:star" size={14} class="text-honey-500" />
+        {provider.rating.toFixed(1)}
+        <span class="font-normal text-muted-soft">({provider.reviews})</span>
+      </span>
+    </div>
+  </div>
+</article>

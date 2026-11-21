@@ -1,0 +1,147 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<dialog
+  id="login-dialog"
+  class="login-dialog"
+  aria-labelledby="login-dialog-title"
+  aria-describedby="login-dialog-description"
+>
+  <div class="dialog-panel relative overflow-hidden rounded-[1.75rem] border border-line bg-paper shadow-lift">
+    <div class="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-forest-100/80 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -left-16 size-52 rounded-full bg-honey-200/50 blur-3xl"></div>
+
+    <button
+      type="button"
+      data-login-close
+      class="absolute right-4 top-4 z-10 inline-flex size-10 items-center justify-center rounded-full border border-line bg-white/80 text-muted transition hover:bg-white hover:text-ink"
+      aria-label="Tutup pemberitahuan"
+    >
+      <Icon name="ph:x" size={19} />
+    </button>
+
+    <div class="relative p-6 sm:p-9">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-honey-200 text-honey-800">
+          <Icon name="ph:lock-key" size={24} />
+        </span>
+        <span class="badge bg-honey-100 text-honey-800">Dalam pengembangan</span>
+      </div>
+
+      <h2 id="login-dialog-title" class="mt-6 font-display text-[1.7rem] font-semibold leading-tight text-ink sm:text-[2rem]">
+        Akun PESONA sedang disiapkan.
+      </h2>
+      <p id="login-dialog-description" class="mt-4 text-sm leading-7 text-muted">
+        Fitur masuk untuk warga, pelaku usaha, dan petugas belum tersedia pada tahap konsep ini.
+        Situs dapat dijelajahi tanpa akun untuk memahami tujuan, alur, dan layanan yang sedang
+        dirancang.
+      </p>
+
+      <div class="mt-6 grid gap-2.5">
+        <div class="flex items-start gap-3 rounded-2xl border border-line bg-white/60 p-4">
+          <span class="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-800">
+            <Icon name="ph:user-circle" size={18} />
+          </span>
+          <div>
+            <p class="text-sm font-semibold text-ink">Ruang warga &amp; pelaku usaha</p>
+            <p class="mt-1 text-xs leading-6 text-muted">
+              Menyimpan permohonan, status, dan riwayat layanan dalam satu akun.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 rounded-2xl border border-line bg-white/60 p-4">
+          <span class="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-800">
+            <Icon name="ph:buildings" size={18} />
+          </span>
+          <div>
+            <p class="text-sm font-semibold text-ink">Integrasi dengan instansi</p>
+            <p class="mt-1 text-xs leading-6 text-muted">
+              Dirancang terhubung dengan kanal dan kewenangan OPD terkait, bukan menggantikannya.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-7 flex flex-col gap-2.5 sm:flex-row">
+        <a href="/tentang#pengembangan" class="btn btn-primary flex-1">
+          Lihat peta jalan
+          <Icon name="ph:arrow-right" size={17} />
+        </a>
+        <button type="button" data-login-close class="btn btn-secondary flex-1">Nanti saja</button>
+      </div>
+
+      <p class="mt-4 text-center text-[0.68rem] leading-5 text-muted-soft">
+        Tidak ada data yang diminta atau disimpan saat Anda membuka pemberitahuan ini.
+      </p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("login-dialog") as HTMLDialogElement | null;
+  let trigger: HTMLElement | null = null;
+
+  function openLoginDialog(event: Event) {
+    const origin = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+    if (!dialog || typeof dialog.showModal !== "function") return;
+
+    event.preventDefault();
+    trigger = origin;
+    if (!dialog.open) {
+      dialog.showModal();
+      document.body.classList.add("no-scroll");
+    }
+    dialog.querySelector<HTMLElement>("[data-login-close]")?.focus();
+  }
+
+  function closeLoginDialog() {
+    if (!dialog || !dialog.open) return;
+    dialog.close();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-login-open]").forEach((control) => {
+    control.addEventListener("click", openLoginDialog);
+  });
+
+  dialog?.querySelectorAll<HTMLElement>("[data-login-close]").forEach((control) => {
+    control.addEventListener("click", closeLoginDialog);
+  });
+
+  dialog?.addEventListener("click", (event) => {
+    if (event.target === dialog) closeLoginDialog();
+  });
+
+  dialog?.addEventListener("cancel", () => {
+    document.body.classList.remove("no-scroll");
+  });
+
+  dialog?.addEventListener("close", () => {
+    document.body.classList.remove("no-scroll");
+    trigger?.focus();
+  });
+</script>
+
+<style>
+  .login-dialog {
+    width: min(34rem, calc(100vw - 2rem));
+    max-width: 34rem;
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .login-dialog::backdrop {
+    background: rgb(7 30 58 / 0.66);
+    backdrop-filter: blur(7px);
+  }
+
+  .login-dialog[open] .dialog-panel {
+    animation: rise-in 0.45s var(--ease-soft) both;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+  }
+</style>

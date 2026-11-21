@@ -1,0 +1,206 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Calculator from "../components/Calculator.astro";
+import CtaPanel from "../components/CtaPanel.astro";
+import FaqList from "../components/FaqList.astro";
+import Icon from "../components/Icon.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHead from "../components/SectionHead.astro";
+import { CALCULATORS } from "../data/calculator";
+
+const faqs = [
+  {
+    q: "Apakah hasil kalkulator bisa dipakai untuk membayar?",
+    a: "Tidak. Hasil ini hanya simulasi edukasi. Nilai yang dibayarkan mengikuti SPPT, kode billing, atau perhitungan resmi yang diterbitkan instansi berwenang.",
+  },
+  {
+    q: "Mengapa tarif PBB-P2 dan reklame bisa berbeda?",
+    a: "Tarif PBB-P2 ditetapkan daerah dengan batas paling tinggi 0,3%, sedangkan reklame dipengaruhi jenis media, ukuran, lokasi, dan durasi. Kalkulator memakai asumsi yang dapat Anda ubah untuk belajar.",
+  },
+  {
+    q: "Apakah data yang saya masukkan disimpan?",
+    a: "Tidak. Perhitungan berjalan di browser Anda. Tidak ada data yang dikirim ke server, disimpan dalam basis data, atau dibagikan kepada pihak lain.",
+  },
+  {
+    q: "Di mana saya bisa mempelajari dasar perhitungannya?",
+    a: "Buka pusat edukasi untuk membaca materi tentang PBJT, PBB-P2, BPHTB, reklame, dan pajak air tanah. Setiap jenis pajak juga memiliki halaman penjelasan sendiri.",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Kalkulator Simulasi Pajak Daerah PESONA",
+  description:
+    "Simulasi lima jenis pajak daerah Kabupaten Klungkung untuk tujuan edukasi, berjalan sepenuhnya di browser.",
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Web",
+  browserRequirements: "Membutuhkan JavaScript untuk menghitung.",
+  isAccessibleForFree: true,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "IDR",
+  },
+  featureList: CALCULATORS.map((calculator) => `Simulasi ${calculator.name}`),
+};
+---
+
+<BaseLayout
+  title="Kalkulator Simulasi Pajak Daerah"
+  description="Hitung simulasi PBJT, PBB-P2, BPHTB, reklame, dan pajak air tanah dengan angka Anda sendiri. Gratis, berjalan di browser, dan bukan ketetapan resmi."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Citta Vidya · Kalkulator"
+    title="Hitung dulu,"
+    highlight="baru lapor."
+    description="Simulasi lima jenis pajak daerah dengan angka Anda sendiri. Ubah nilai, lihat pola perhitungan, lalu gunakan hasilnya sebagai bahan belajar — bukan sebagai ketetapan resmi."
+    breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Kalkulator" }]}
+    icon="ph:calculator"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="#kalkulator" class="btn btn-primary">
+        Mulai menghitung
+        <Icon name="ph:arrow-down" size={17} />
+      </a>
+      <a href="/pajak" class="btn btn-secondary">
+        Pelajari jenis pajak
+        <Icon name="ph:bank" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-forest-50/70 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-700">Mode simulasi</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">5 jenis pajak</p>
+        </div>
+        <Icon name="ph:function" size={22} class="text-forest-700" />
+      </div>
+      <div class="divide-y divide-line">
+        {
+          CALCULATORS.map((calculator) => (
+            <a
+              href={`#${calculator.id}`}
+              data-calc-jump={calculator.id}
+              class="flex items-center justify-between gap-3 px-5 py-3 text-xs font-medium text-muted transition hover:bg-forest-50/70 hover:text-forest-800"
+            >
+              <span>{calculator.name}</span>
+              <span class="text-[0.65rem] font-semibold tabular-nums text-forest-700">{calculator.rateLabel}</span>
+            </a>
+          ))
+        }
+      </div>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Tarif dan contoh adalah ilustrasi. Hasil tidak disimpan.
+      </p>
+    </div>
+  </PageHero>
+
+  <section id="kalkulator" class="section-pad scroll-mt-24">
+    <div class="container-page">
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">
+            <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+            Kalkulator
+          </p>
+          <h2 class="display-md mt-3">Coba dengan angka Anda.</h2>
+        </div>
+        <span class="badge badge-sand">Hasil ilustrasi</span>
+      </div>
+
+      <Calculator />
+
+      <div class="mt-8 rounded-2xl border border-line bg-white/60 p-5 sm:p-6">
+        <div class="flex items-start gap-3">
+          <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-800">
+            <Icon name="ph:info" size={18} />
+          </span>
+          <div>
+            <p class="text-sm font-semibold text-ink">Cara membaca hasil simulasi.</p>
+            <p class="mt-1.5 max-w-3xl text-xs leading-6 text-muted">
+              Hasil adalah perkiraan berdasarkan angka yang Anda masukkan dan tarif ilustrasi.
+              Perbedaan dasar pengenaan, nilai objek, pengecualian, atau tarif resmi dapat
+              menghasilkan angka yang berbeda. Gunakan tombol konsultasi untuk membahas kasus
+              nyata melalui kanal resmi saat layanan dibuka.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Sebelum menghitung"
+        title="Tiga kebiasaan yang membuat hasil lebih berguna."
+        description="Kalkulator hanya membantu jika angka dan konteksnya jelas."
+      />
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {
+          [
+            {
+              title: "Gunakan satu masa",
+              text: "Masukkan angka untuk satu masa pajak agar mudah dibandingkan dengan bulan atau tahun lain.",
+              icon: "ph:calendar-dots",
+              step: "01",
+            },
+            {
+              title: "Pisahkan objek",
+              text: "Jangan mencampur nilai objek pajak dengan pendapatan atau biaya yang tidak termasuk dasar pengenaan.",
+              icon: "ph:funnel",
+              step: "02",
+            },
+            {
+              title: "Simpan asal angka",
+              text: "Catat dari mana nilai berasal. Petugas dapat meminta rincian saat verifikasi atau konsultasi.",
+              icon: "ph:archive",
+              step: "03",
+            },
+          ].map((item) => (
+            <div class="card p-6">
+              <div class="flex items-center justify-between gap-3">
+                <span class="inline-flex size-10 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+                  <Icon name={item.icon} size={19} />
+                </span>
+                <span class="font-display text-xs font-semibold tabular-nums text-muted-soft">{item.step}</span>
+              </div>
+              <h3 class="mt-4 text-sm font-semibold text-ink">{item.title}</h3>
+              <p class="mt-2 text-xs leading-6 text-muted">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Pertanyaan kalkulator
+        </p>
+        <h2 class="display-md mt-4">Sebelum memakai hasilnya.</h2>
+        <p class="mt-5 text-sm leading-7 text-muted">
+          Kalkulator dibuat untuk belajar. Untuk keputusan nyata, gunakan dokumen dan kanal resmi.
+        </p>
+      </div>
+      <FaqList items={faqs} />
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Lanjutkan"
+    title="Pahami jenis pajaknya, bukan hanya angkanya."
+    description="Buka halaman pajak daerah untuk melihat objek, subjek, masa pajak, dokumen, dan contoh perhitungan yang lebih lengkap."
+    primaryLabel="Lihat jenis pajak"
+    primaryHref="/pajak"
+    secondaryLabel="Baca materi edukasi"
+    secondaryHref="/edukasi"
+  />
+</BaseLayout>
+

@@ -1,0 +1,283 @@
+---
+import Icon from "./Icon.astro";
+
+const stages = [
+  {
+    number: "01",
+    name: "Citta Vidya",
+    description: "Belajar, menghitung, dan memahami kewajiban.",
+    icon: "ph:book-open-text",
+  },
+  {
+    number: "02",
+    name: "Citta Seva",
+    description: "Daftar, lapor, bayar, dan pantau dalam satu alur.",
+    icon: "ph:bank",
+  },
+  {
+    number: "03",
+    name: "Citta Karya",
+    description: "Tumbuh lewat registry, pelatihan, dan koperasi.",
+    icon: "ph:storefront",
+  },
+];
+---
+
+<div data-flow-map class="reveal relative">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <p class="eyebrow-light">
+      <span class="size-1.5 rounded-full bg-honey-300" aria-hidden="true"></span>
+      Ilustrasi alur
+    </p>
+    <button
+      type="button"
+      data-flow-toggle
+      aria-pressed="false"
+      class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-2 text-[0.68rem] font-semibold text-forest-100/80 transition hover:border-white/30 hover:text-white"
+    >
+      <Icon name="ph:pause" size={13} />
+      <span data-flow-label>Jeda animasi</span>
+    </button>
+  </div>
+
+  <div data-flow-canvas class="mt-4">
+    <svg
+      class="hidden w-full overflow-visible xl:block"
+      viewBox="0 75 1120 370"
+      fill="none"
+      role="img"
+      aria-labelledby="flow-svg-title flow-svg-desc"
+    >
+      <title id="flow-svg-title">Alur PESONA dari warga sampai manfaat bersama</title>
+      <desc id="flow-svg-desc">
+        Warga, pelaku usaha, dan koperasi masuk melalui satu kanal PESONA. Tiga pilar membantu
+        mereka belajar, mengurus layanan, dan menumbuhkan usaha, lalu menghasilkan pemahaman,
+        ketertiban administrasi, dan pertumbuhan usaha.
+      </desc>
+
+      <defs>
+        <radialGradient id="flow-aura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#2F78B7" stop-opacity="0.32"></stop>
+          <stop offset="1" stop-color="#2F78B7" stop-opacity="0"></stop>
+        </radialGradient>
+        <linearGradient id="flow-hub" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#164C82" stop-opacity="0.96"></stop>
+          <stop offset="100%" stop-color="#0B2C52" stop-opacity="0.98"></stop>
+        </linearGradient>
+        <linearGradient id="flow-line" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#96BDE0" stop-opacity="0.25"></stop>
+          <stop offset="50%" stop-color="#A8CBFF" stop-opacity="0.85"></stop>
+          <stop offset="100%" stop-color="#96BDE0" stop-opacity="0.25"></stop>
+        </linearGradient>
+      </defs>
+
+      <circle cx="560" cy="248" r="330" fill="url(#flow-aura)"></circle>
+
+      <!-- Koneksi kiri dan kanan -->
+      <path d="M250 248H346" stroke="url(#flow-line)" stroke-width="1.6" stroke-dasharray="5 9" stroke-linecap="round" class="flow-dash"></path>
+      <path d="M774 248H868" stroke="url(#flow-line)" stroke-width="1.6" stroke-dasharray="5 9" stroke-linecap="round" class="flow-dash"></path>
+      <path d="M250 194C292 194 310 206 346 218" stroke="#96BDE0" stroke-opacity="0.16" stroke-width="1.2"></path>
+      <path d="M250 302C292 302 310 290 346 278" stroke="#96BDE0" stroke-opacity="0.16" stroke-width="1.2"></path>
+      <path d="M774 218C810 206 828 194 868 194" stroke="#96BDE0" stroke-opacity="0.16" stroke-width="1.2"></path>
+      <path d="M774 278C810 290 828 302 868 302" stroke="#96BDE0" stroke-opacity="0.16" stroke-width="1.2"></path>
+
+      <circle cx="250" cy="248" r="4.5" fill="#A8CBFF" class="flow-dot" style="--travel: 96px; --duration: 4.4s; --delay: 0s;"></circle>
+      <circle cx="774" cy="248" r="4.5" fill="#A8CBFF" class="flow-dot" style="--travel: 94px; --duration: 4.4s; --delay: 1.6s;"></circle>
+      <circle cx="250" cy="194" r="3" fill="#C5D9EE" class="flow-dot" style="--travel: 96px; --duration: 5.8s; --delay: 0.8s;"></circle>
+      <circle cx="774" cy="278" r="3" fill="#C5D9EE" class="flow-dot" style="--travel: 94px; --duration: 5.8s; --delay: 2.6s;"></circle>
+
+      <circle cx="348" cy="248" r="10" stroke="#A8CBFF" stroke-opacity="0.4" class="pulse-node"></circle>
+      <circle cx="772" cy="248" r="10" stroke="#A8CBFF" stroke-opacity="0.4" class="pulse-node" style="animation-delay: 1.2s;"></circle>
+
+      <!-- PENGGGUNA -->
+      <g>
+        <rect x="28" y="138" width="222" height="220" rx="28" fill="#0E3357" stroke="#FFFFFF" stroke-opacity="0.11"></rect>
+        <text x="52" y="172" fill="#96BDE0" font-size="10.5" font-weight="700" letter-spacing="1.8">PENGGUNA</text>
+        <text x="52" y="202" fill="#F4F7FC" font-size="19" font-weight="600" font-family="Bricolage Grotesque, sans-serif">Warga, pelaku</text>
+        <text x="52" y="225" fill="#F4F7FC" font-size="19" font-weight="600" font-family="Bricolage Grotesque, sans-serif">usaha &amp; koperasi</text>
+
+        <g transform="translate(52 250)">
+          <rect width="26" height="26" rx="8" fill="#FFFFFF" fill-opacity="0.07"></rect>
+          <circle cx="13" cy="10" r="3.5" stroke="#E8F1FB" stroke-width="1.4"></circle>
+          <path d="M7.5 20c0-3 2.5-4.6 5.5-4.6s5.5 1.6 5.5 4.6" stroke="#E8F1FB" stroke-width="1.4" stroke-linecap="round"></path>
+          <text x="38" y="17" fill="#E8F1FB" font-size="12.5" font-weight="500">Warga</text>
+        </g>
+        <g transform="translate(52 287)">
+          <rect width="26" height="26" rx="8" fill="#FFFFFF" fill-opacity="0.07"></rect>
+          <path d="M6 10h14M7 10v10h12V10M10 20v-5h6v5" stroke="#E8F1FB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+          <text x="38" y="17" fill="#E8F1FB" font-size="12.5" font-weight="500">Pelaku usaha</text>
+        </g>
+        <g transform="translate(52 324)">
+          <rect width="26" height="26" rx="8" fill="#FFFFFF" fill-opacity="0.07"></rect>
+          <circle cx="10" cy="10" r="3" stroke="#E8F1FB" stroke-width="1.3"></circle>
+          <circle cx="18" cy="11" r="2.2" stroke="#E8F1FB" stroke-width="1.3"></circle>
+          <path d="M5 20c0-3 2.2-4.5 5-4.5s5 1.5 5 4.5M15.5 16c2.5 0 4.5 1.4 4.5 4" stroke="#E8F1FB" stroke-width="1.3" stroke-linecap="round"></path>
+          <text x="38" y="17" fill="#E8F1FB" font-size="12.5" font-weight="500">Koperasi</text>
+        </g>
+        <text x="52" y="388" fill="#C5D9EE" fill-opacity="0.55" font-size="10.5">Mulai dari satu kebutuhan</text>
+      </g>
+
+      <!-- PUSAT PESONA -->
+      <g>
+        <rect x="350" y="88" width="420" height="330" rx="34" fill="url(#flow-hub)" stroke="#96BDE0" stroke-opacity="0.22"></rect>
+        <text x="382" y="129" fill="#F4F7FC" font-size="22" font-weight="700" font-family="Bricolage Grotesque, sans-serif" letter-spacing="0.4">PESONA</text>
+        <text x="382" y="150" fill="#C5D9EE" fill-opacity="0.8" font-size="10.5" letter-spacing="1.3">SATU IDENTITAS · SATU DATA · SATU ALUR</text>
+        <text x="738" y="129" fill="#A8CBFF" font-size="10" font-weight="700" text-anchor="end" letter-spacing="1.2">TRI CITTA</text>
+
+        <!-- baris 1 -->
+        <g>
+          <rect x="374" y="174" width="372" height="70" rx="18" fill="#FFFFFF" fill-opacity="0.055" stroke="#FFFFFF" stroke-opacity="0.08"></rect>
+          <rect x="390" y="193" width="34" height="34" rx="11" fill="#A8CBFF" fill-opacity="0.16"></rect>
+          <g transform="translate(400 202) scale(0.58)" stroke="#A8CBFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 6v15M4 5.5A2.5 2.5 0 0 1 6.5 3H11v18H6.5A2.5 2.5 0 0 0 4 23V5.5ZM20 5.5A2.5 2.5 0 0 0 17.5 3H13v18h4.5A2.5 2.5 0 0 1 20 23V5.5Z"></path>
+          </g>
+          <text x="438" y="203" fill="#F4F7FC" font-size="14" font-weight="600" font-family="Bricolage Grotesque, sans-serif">Citta Vidya</text>
+          <text x="438" y="224" fill="#C5D9EE" fill-opacity="0.75" font-size="11.5">Belajar, menghitung, memahami</text>
+          <text x="730" y="214" fill="#96BDE0" fill-opacity="0.55" font-size="11" font-weight="700" text-anchor="end">01</text>
+        </g>
+
+        <!-- baris 2 -->
+        <g>
+          <rect x="374" y="252" width="372" height="70" rx="18" fill="#FFFFFF" fill-opacity="0.055" stroke="#FFFFFF" stroke-opacity="0.08"></rect>
+          <rect x="390" y="271" width="34" height="34" rx="11" fill="#FFFFFF" fill-opacity="0.09"></rect>
+          <g transform="translate(400 280) scale(0.58)" stroke="#E8F1FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 10h18L12 3 3 10ZM5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"></path>
+          </g>
+          <text x="438" y="281" fill="#F4F7FC" font-size="14" font-weight="600" font-family="Bricolage Grotesque, sans-serif">Citta Seva</text>
+          <text x="438" y="302" fill="#C5D9EE" fill-opacity="0.75" font-size="11.5">Daftar, lapor, bayar, pantau</text>
+          <text x="730" y="292" fill="#96BDE0" fill-opacity="0.55" font-size="11" font-weight="700" text-anchor="end">02</text>
+        </g>
+
+        <!-- baris 3 -->
+        <g>
+          <rect x="374" y="330" width="372" height="70" rx="18" fill="#FFFFFF" fill-opacity="0.055" stroke="#FFFFFF" stroke-opacity="0.08"></rect>
+          <rect x="390" y="349" width="34" height="34" rx="11" fill="#FFFFFF" fill-opacity="0.09"></rect>
+          <g transform="translate(400 358) scale(0.58)" stroke="#E8F1FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9 6 4h12l2 5M5 9v11h14V9M9 20v-6h6v6M4 9h16"></path>
+          </g>
+          <text x="438" y="359" fill="#F4F7FC" font-size="14" font-weight="600" font-family="Bricolage Grotesque, sans-serif">Citta Karya</text>
+          <text x="438" y="380" fill="#C5D9EE" fill-opacity="0.75" font-size="11.5">Tumbuh, terhubung, bertahan</text>
+          <text x="730" y="370" fill="#96BDE0" fill-opacity="0.55" font-size="11" font-weight="700" text-anchor="end">03</text>
+        </g>
+      </g>
+
+      <!-- HASIL -->
+      <g>
+        <rect x="868" y="138" width="224" height="220" rx="28" fill="#0E3357" stroke="#FFFFFF" stroke-opacity="0.11"></rect>
+        <text x="892" y="172" fill="#96BDE0" font-size="10.5" font-weight="700" letter-spacing="1.8">HASIL</text>
+        <text x="892" y="202" fill="#F4F7FC" font-size="19" font-weight="600" font-family="Bricolage Grotesque, sans-serif">Manfaat</text>
+        <text x="892" y="225" fill="#F4F7FC" font-size="19" font-weight="600" font-family="Bricolage Grotesque, sans-serif">bersama</text>
+
+        <g transform="translate(892 252)">
+          <circle cx="8" cy="8" r="7.5" fill="#A8CBFF" fill-opacity="0.12" stroke="#A8CBFF" stroke-opacity="0.4"></circle>
+          <path d="m4.5 8 2.4 2.4 4.6-5" stroke="#A8CBFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <text x="28" y="12.5" fill="#E8F1FB" font-size="12.5" font-weight="500">Paham kewajiban</text>
+        </g>
+        <g transform="translate(892 288)">
+          <circle cx="8" cy="8" r="7.5" fill="#A8CBFF" fill-opacity="0.12" stroke="#A8CBFF" stroke-opacity="0.4"></circle>
+          <path d="m4.5 8 2.4 2.4 4.6-5" stroke="#A8CBFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <text x="28" y="12.5" fill="#E8F1FB" font-size="12.5" font-weight="500">Tertib administrasi</text>
+        </g>
+        <g transform="translate(892 324)">
+          <circle cx="8" cy="8" r="7.5" fill="#A8CBFF" fill-opacity="0.12" stroke="#A8CBFF" stroke-opacity="0.4"></circle>
+          <path d="m4.5 8 2.4 2.4 4.6-5" stroke="#A8CBFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <text x="28" y="12.5" fill="#E8F1FB" font-size="12.5" font-weight="500">Usaha bertumbuh</text>
+        </g>
+        <text x="892" y="388" fill="#C5D9EE" fill-opacity="0.55" font-size="10.5">Kembali menjadi manfaat untuk Klungkung</text>
+      </g>
+    </svg>
+
+    <!-- Fallback yang lebih mudah dibaca di layar kecil -->
+    <div class="xl:hidden">
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <p class="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-forest-200/75">Pengguna</p>
+        <p class="mt-2 text-sm font-semibold text-white">Warga, pelaku usaha, dan koperasi</p>
+        <p class="mt-1 text-xs leading-6 text-forest-100/70">Mulai dari satu kebutuhan yang nyata.</p>
+      </div>
+
+      <div class="relative ml-[1.15rem] border-l border-dashed border-forest-300/30 py-2 pl-7">
+        {
+          stages.map((stage, index) => (
+            <div class:list={["relative", index > 0 && "mt-4"]}>
+              <span class="absolute -left-[2.1rem] top-1 inline-flex size-8 items-center justify-center rounded-full border border-forest-300/30 bg-forest-900 text-[0.62rem] font-bold text-honey-200">
+                {stage.number}
+              </span>
+              <div class="rounded-2xl border border-white/10 bg-white/[0.055] p-4">
+                <div class="flex items-center gap-2">
+                  <Icon name={stage.icon} size={17} class="text-honey-300" />
+                  <p class="font-display text-[0.95rem] font-semibold text-white">{stage.name}</p>
+                </div>
+                <p class="mt-1.5 text-xs leading-6 text-forest-100/70">{stage.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="rounded-2xl border border-honey-300/20 bg-honey-300/10 p-4">
+        <p class="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-honey-200/70">Hasil</p>
+        <p class="mt-2 text-sm font-semibold text-white">Paham, tertib, dan tumbuh bersama</p>
+        <p class="mt-1 text-xs leading-6 text-forest-100/70">Manfaat kembali ke warga dan Klungkung.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/10 pt-4 text-[0.66rem] text-forest-100/70">
+    <span class="inline-flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-honey-300"></span> Satu alur, bukan tiga aplikasi terpisah</span>
+    <span class="inline-flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-forest-300"></span> Ilustrasi konsep, bukan tampilan final</span>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-flow-map]").forEach((root) => {
+    const canvas = root.querySelector<HTMLElement>("[data-flow-canvas]");
+    const button = root.querySelector<HTMLButtonElement>("[data-flow-toggle]");
+    const label = root.querySelector<HTMLElement>("[data-flow-label]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (!canvas || !button || !label) return;
+
+    let paused = false;
+
+    const render = () => {
+      canvas.classList.toggle("motion-paused", paused);
+      button.setAttribute("aria-pressed", String(paused));
+      label.textContent = paused ? "Putar animasi" : "Jeda animasi";
+    };
+
+    if (reducedMotion.matches) {
+      paused = true;
+      label.textContent = "Animasi dijeda";
+      button.disabled = true;
+      button.classList.add("cursor-default", "opacity-70");
+      button.setAttribute("aria-pressed", "true");
+      canvas.classList.add("motion-paused");
+    }
+
+    button.addEventListener("click", () => {
+      if (reducedMotion.matches) return;
+      paused = !paused;
+      render();
+    });
+
+    reducedMotion.addEventListener?.("change", (event) => {
+      button.disabled = event.matches;
+      paused = event.matches;
+      if (event.matches) {
+        label.textContent = "Animasi dijeda";
+        button.classList.add("cursor-default", "opacity-70");
+      } else {
+        button.classList.remove("cursor-default", "opacity-70");
+      }
+      render();
+    });
+  });
+</script>
+
+<style>
+  .pulse-node {
+    animation: pulse-soft 4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+</style>

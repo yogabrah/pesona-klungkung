@@ -1,0 +1,170 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaPanel from "../../components/CtaPanel.astro";
+import Icon from "../../components/Icon.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import TrainingCard from "../../components/TrainingCard.astro";
+import { partners, trainings } from "../../lib/content";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Pelatihan & Sertifikasi Usaha — PESONA",
+  description:
+    "Contoh katalog pelatihan dan sertifikasi untuk pelaku usaha wisata, homestay, pemandu, dive, kuliner, dan digital di Kabupaten Klungkung.",
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: trainings.map((training, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: training.title,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Pelatihan & Sertifikasi Usaha"
+  description="Contoh katalog pelatihan dan sertifikasi untuk homestay, pemandu, dive, kuliner, dan digital di Kabupaten Klungkung. Jadwal dan biaya adalah ilustrasi."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Citta Karya · Kapasitas usaha"
+    title="Belajar dulu,"
+    highlight="lalu naik kelas."
+    description="Keterampilan dan sertifikasi membantu usaha lokal memberi layanan yang lebih konsisten. PESONA merancang jalur belajar yang terhubung dengan registry dan pendampingan."
+    breadcrumbs={[
+      { label: "Beranda", href: "/" },
+      { label: "Usaha", href: "/usaha" },
+      { label: "Pelatihan" },
+    ]}
+    icon="ph:graduation-cap"
+  >
+    <div slot="actions" class="mt-8 flex flex-wrap gap-3">
+      <a href="#katalog" class="btn btn-primary">
+        Lihat katalog
+        <Icon name="ph:arrow-down" size={17} />
+      </a>
+      <a href="/usaha/registry" class="btn btn-secondary">
+        Lihat registry
+        <Icon name="ph:storefront" size={17} />
+      </a>
+    </div>
+
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-forest-50/70 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-700">Contoh katalog</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">{trainings.length} pelatihan</p>
+        </div>
+        <Icon name="ph:medal" size={22} class="text-forest-700" />
+      </div>
+      <div class="grid grid-cols-2 divide-x divide-line">
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">50%</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">subsidi ilustrasi</p>
+        </div>
+        <div class="px-5 py-4">
+          <p class="font-display text-2xl font-semibold text-forest-800">{partners.length}</p>
+          <p class="mt-1 text-[0.65rem] text-muted-soft">mitra contoh</p>
+        </div>
+      </div>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Jadwal, biaya, dan kuota bukan ketetapan resmi.
+      </p>
+    </div>
+  </PageHero>
+
+  <!-- Katalog -->
+  <section id="katalog" class="section-pad scroll-mt-24">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Katalog pelatihan"
+        title="Pilih keterampilan yang relevan."
+        description="Enam contoh pelatihan dari mitra yang berbeda. Sebagian menyertakan sertifikasi; sebagian berfokus pada keterampilan praktis."
+      >
+        <span slot="action" class="badge badge-sand">Jadwal ilustrasi</span>
+      </SectionHead>
+      <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {trainings.map((training) => <TrainingCard training={training} />)}
+      </div>
+      <p class="fine-print mt-6">
+        Biaya setelah subsidi, kuota, dan jadwal adalah simulasi. Pendaftaran nyata belum
+        tersedia. Nama mitra ditampilkan sebagai ilustrasi ekosistem, bukan klaim kemitraan resmi.
+      </p>
+    </div>
+  </section>
+
+  <!-- Alur -->
+  <section class="border-y border-line bg-white/50 section-pad">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">
+          <span class="h-px w-7 bg-honey-400" aria-hidden="true"></span>
+          Cara kerja
+        </p>
+        <h2 class="display-md mt-4">Dari minat menjadi kompetensi.</h2>
+        <p class="mt-5 text-[1.02rem] leading-8 text-muted">
+          Pelatihan bukan sekadar acara. PESONA merancang alur yang menghubungkan materi,
+          praktik, sertifikasi, dan peluang tampil di registry.
+        </p>
+      </div>
+      <ol class="space-y-3">
+        {[
+          ["Pilih pelatihan", "Sesuaikan dengan jenis usaha dan kebutuhan layanan.", "ph:list-magnifying-glass"],
+          ["Siapkan minat", "Isi profil, jadwal, dan kebutuhan pendampingan.", "ph:note-pencil"],
+          ["Ikuti pembelajaran", "Kelas tatap muka, daring, atau hybrid sesuai jadwal.", "ph:chalkboard-teacher"],
+          ["Raih sertifikasi", "Ikuti asesmen penyelenggara dan simpan bukti kompetensi.", "ph:medal"],
+          ["Terhubung ke pasar", "Gunakan sertifikasi sebagai bagian dari kesiapan listing.", "ph:storefront"],
+        ].map(([title, text, icon], index) => (
+          <li class="flex gap-4 rounded-2xl border border-line bg-white/65 p-5">
+            <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-forest-50 font-display text-xs font-bold text-forest-800">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <p class="flex items-center gap-2 text-sm font-semibold text-ink"><Icon name={icon} size={16} class="text-forest-700" /> {title}</p>
+              <p class="mt-1.5 text-xs leading-6 text-muted">{text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Mitra -->
+  <section class="section-pad">
+    <div class="container-page">
+      <SectionHead
+        eyebrow="Mitra"
+        title="Mereka yang mengisi kapasitas."
+        description="Nama mitra pada bagian ini adalah ilustrasi ekosistem. Kewenangan pelatihan dan sertifikasi tetap berada pada masing-masing lembaga."
+      />
+      <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {partners.map((partner) => (
+          <div class="flex items-center gap-3 rounded-2xl border border-line bg-white/65 p-4">
+            <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-800">
+              <Icon name="ph:handshake" size={17} />
+            </span>
+            <div class="min-w-0">
+              <p class="truncate text-xs font-semibold text-ink">{partner.name}</p>
+              <p class="mt-0.5 text-[0.6rem] leading-4 text-muted">{partner.role}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="fine-print mt-5">Nama mitra ditampilkan sebagai ilustrasi, bukan klaim kemitraan resmi.</p>
+    </div>
+  </section>
+
+  <CtaPanel
+    eyebrow="Siapkan usaha"
+    title="Kompetensi yang baik membuka lebih banyak pintu."
+    description="Pelajari pilihan pelatihan dan hubungkan dengan kesiapan dokumen usaha. Pendaftaran nyata akan dibuka bertahap."
+    primaryLabel="Kembali ke Citta Karya"
+    primaryHref="/usaha"
+    secondaryLabel="Lihat registry"
+    secondaryHref="/usaha/registry"
+    note="Pendaftaran pelatihan masih dalam pengembangan."
+  />
+</BaseLayout>

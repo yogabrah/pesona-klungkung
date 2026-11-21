@@ -1,0 +1,163 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import PageHero from "../components/PageHero.astro";
+import { CITTAS } from "../data/site";
+import { SERVICES } from "../data/services";
+import { articles, taxList } from "../lib/content";
+
+const utama = [
+  { label: "Beranda", href: "/", icon: "ph:house" },
+  { label: "Tentang PESONA", href: "/tentang", icon: "ph:compass" },
+  { label: "Pusat edukasi", href: "/edukasi", icon: "ph:book-open-text" },
+  { label: "Jenis pajak daerah", href: "/pajak", icon: "ph:bank" },
+  { label: "Kalkulator simulasi", href: "/kalkulator", icon: "ph:calculator" },
+  { label: "Layanan Citta Seva", href: "/layanan", icon: "ph:path" },
+  { label: "Citta Karya", href: "/usaha", icon: "ph:storefront" },
+  { label: "Contoh dashboard", href: "/dashboard", icon: "ph:squares-four" },
+];
+
+const usaha = [
+  { label: "Registry penyedia", href: "/usaha/registry", icon: "ph:storefront" },
+  { label: "Pelatihan & sertifikasi", href: "/usaha/pelatihan", icon: "ph:graduation-cap" },
+  { label: "Ruang koperasi", href: "/usaha/koperasi", icon: "ph:users-three" },
+];
+
+const totalPages = utama.length + SERVICES.length + taxList.length + articles.length + usaha.length + 1;
+---
+
+<BaseLayout
+  title="Peta Situs"
+  description="Indeks seluruh halaman PESONA: profil konsep, pusat edukasi, jenis pajak daerah, kalkulator, enam layanan, dan ruang usaha."
+>
+  <PageHero
+    eyebrow="Navigasi · Indeks halaman"
+    title="Semua halaman,"
+    highlight="dalam satu peta."
+    description="Gunakan peta situs ini untuk menemukan penjelasan layanan, jenis pajak, materi edukasi, dan ruang usaha tanpa harus menebak alamat halaman."
+    breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Peta situs" }]}
+    icon="ph:map-trifold"
+  >
+    <div slot="aside" class="card overflow-hidden bg-white/85">
+      <div class="flex items-center justify-between gap-3 border-b border-line bg-forest-50/70 px-5 py-4">
+        <div>
+          <p class="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-forest-700">Indeks</p>
+          <p class="mt-1 font-display text-lg font-semibold text-ink">{totalPages} halaman</p>
+        </div>
+        <Icon name="ph:map-trifold" size={22} class="text-forest-700" />
+      </div>
+      <div class="px-5 py-4 text-xs leading-6 text-muted">
+        Termasuk {articles.length} materi edukasi, {taxList.length} halaman pajak, dan {SERVICES.length} halaman layanan.
+      </div>
+      <p class="border-t border-line px-5 py-3 text-[0.62rem] leading-5 text-muted-soft">
+        Peta XML juga tersedia untuk mesin pencari.
+      </p>
+    </div>
+  </PageHero>
+
+  <section class="section-pad">
+    <div class="container-page">
+      <div class="grid gap-5 lg:grid-cols-2">
+        <div class="card p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-semibold text-ink">
+            <Icon name="ph:compass" size={19} class="text-forest-700" />
+            Halaman utama
+          </h2>
+          <div class="mt-4 grid gap-1 sm:grid-cols-2">
+            {utama.map((item) => (
+              <a href={item.href} class="flex items-center gap-2 rounded-lg px-2 py-2.5 text-xs font-medium text-muted transition hover:bg-forest-50 hover:text-forest-800">
+                <Icon name={item.icon} size={14} class="shrink-0 text-forest-700" />
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-semibold text-ink">
+            <Icon name="ph:path" size={19} class="text-forest-700" />
+            Layanan Citta Seva
+          </h2>
+          <div class="mt-4 grid gap-1 sm:grid-cols-2">
+            {SERVICES.map((service) => (
+              <a href={`/layanan/${service.slug}`} class="flex items-center gap-2 rounded-lg px-2 py-2.5 text-xs font-medium text-muted transition hover:bg-forest-50 hover:text-forest-800">
+                <Icon name={service.icon} size={14} class="shrink-0 text-forest-700" />
+                {service.shortTitle}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-semibold text-ink">
+            <Icon name="ph:bank" size={19} class="text-forest-700" />
+            Pajak daerah
+          </h2>
+          <div class="mt-4 grid gap-1 sm:grid-cols-2">
+            {taxList.map((tax) => (
+              <a href={`/pajak/${tax.slug}`} class="flex items-center gap-2 rounded-lg px-2 py-2.5 text-xs font-medium text-muted transition hover:bg-forest-50 hover:text-forest-800">
+                <Icon name={tax.iconName} size={14} class="shrink-0 text-forest-700" />
+                {tax.name}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-semibold text-ink">
+            <Icon name="ph:storefront" size={19} class="text-forest-700" />
+            Citta Karya
+          </h2>
+          <div class="mt-4 grid gap-1 sm:grid-cols-2">
+            {usaha.map((item) => (
+              <a href={item.href} class="flex items-center gap-2 rounded-lg px-2 py-2.5 text-xs font-medium text-muted transition hover:bg-forest-50 hover:text-forest-800">
+                <Icon name={item.icon} size={14} class="shrink-0 text-forest-700" />
+                {item.label}
+              </a>
+            ))}
+          </div>
+          <div class="mt-4 rounded-xl border border-line bg-paper p-3">
+            <p class="flex items-center gap-2 text-[0.68rem] leading-5 text-muted-soft">
+              <Icon name="ph:file-text" size={14} class="text-forest-700" />
+              <a href="/sitemap-index.xml" class="font-semibold text-forest-800 hover:underline">sitemap-index.xml</a>
+              untuk mesin pencari.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-5 p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 class="flex items-center gap-2 font-display text-lg font-semibold text-ink">
+            <Icon name="ph:book-open-text" size={19} class="text-forest-700" />
+            Materi edukasi
+          </h2>
+          <span class="badge badge-forest">{articles.length} materi</span>
+        </div>
+        <div class="mt-4 grid gap-1 sm:grid-cols-2">
+          {articles.map((article) => (
+            <a href={`/edukasi/${article.id}`} class="flex items-start justify-between gap-3 rounded-lg px-2 py-2.5 text-xs font-medium leading-6 text-muted transition hover:bg-forest-50 hover:text-forest-800">
+              <span>{article.title}</span>
+              <span class="shrink-0 text-[0.6rem] text-muted-soft">{article.minutes} mnt</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+        <p class="fine-print max-w-2xl">
+          Peta ini mencakup halaman publik pada tahap konsep. Akun, portal petugas, dan layanan
+          transaksional belum dibuka.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          {CITTAS.map((citta) => (
+            <a href={citta.href} class="chip hover:border-forest-300 hover:text-forest-800">
+              <Icon name={citta.icon} size={13} class="text-forest-700" />
+              {citta.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

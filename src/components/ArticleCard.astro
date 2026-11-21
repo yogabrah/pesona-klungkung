@@ -1,0 +1,49 @@
+---
+import type { Article } from "../lib/content";
+import ArticleArt from "./ArticleArt.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  article: Article;
+  featured?: boolean;
+  class?: string;
+}
+
+const { article, featured = false, class: className = "" } = Astro.props;
+---
+
+<a
+  href={`/edukasi/${article.id}`}
+  class:list={["reveal group card card-hover flex h-full flex-col overflow-hidden", className]}
+>
+  <div class="p-2.5 pb-0">
+    <ArticleArt category={article.category} class="transition duration-500 group-hover:scale-[1.01]" />
+  </div>
+
+  <div class:list={["flex flex-1 flex-col p-5", featured && "sm:p-7"]}>
+    <div class="flex items-center gap-3 text-[0.68rem] font-medium text-muted-soft">
+      <span>{article.level}</span>
+      <span class="size-1 rounded-full bg-line-strong" aria-hidden="true"></span>
+      <span class="inline-flex items-center gap-1">
+        <Icon name="ph:clock" size={13} />
+        {article.minutes} menit
+      </span>
+    </div>
+
+    <h3 class:list={["mt-3 font-display font-semibold leading-tight text-ink transition-colors group-hover:text-forest-800", featured ? "text-[1.55rem] sm:text-[1.75rem]" : "text-[1.16rem]"]}>
+      {article.title}
+    </h3>
+    <p class:list={["mt-3 flex-1 text-sm leading-7 text-muted", featured ? "line-clamp-3" : "line-clamp-2"]}>
+      {article.excerpt}
+    </p>
+
+    <div class="mt-5 flex items-center justify-between border-t border-line pt-4">
+      <span class="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-forest-700">
+        Baca materi
+      </span>
+      <span class="inline-flex size-8 items-center justify-center rounded-full bg-forest-50 text-forest-800 transition duration-300 group-hover:bg-forest-800 group-hover:text-white">
+        <Icon name="ph:arrow-right" size={14} />
+      </span>
+    </div>
+  </div>
+</a>
